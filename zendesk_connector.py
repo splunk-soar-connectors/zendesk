@@ -24,8 +24,6 @@ from zendesk_consts import *
 import requests
 import simplejson as json
 
-requests.packages.urllib3.disable_warnings()
-
 
 class ZendeskConnector(BaseConnector):
 
