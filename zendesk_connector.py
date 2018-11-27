@@ -1,16 +1,8 @@
-# --
-# File: zendesk/zendesk_connector.py
+# File: zendesk_connector.py
+# Copyright (c) 2016-2018 Splunk Inc.
 #
-# Copyright (c) Phantom Cyber Corporation, 2016-2018
-#
-# This unpublished material is proprietary to Phantom Cyber.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Phantom Cyber.
-#
-# --
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
 """ Code that implements calls made to the zendesk systems device"""
 
 # Phantom imports
@@ -530,6 +522,7 @@ class ZendeskConnector(BaseConnector):
             ret_val = self._test_connectivity(param)
 
         return ret_val
+
 
 if __name__ == '__main__':
     """ Code that is executed when run in standalone debug mode
