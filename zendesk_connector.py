@@ -132,7 +132,12 @@ class ZendeskConnector(BaseConnector):
             resp_json = r.json()
         except Exception as e:
             # r.text is guaranteed to be NON None, it will be empty, but not None
-            msg_string = ZENDESK_ERR_JSON_PARSE.format(raw_text=r.text)
+            try:
+                msg_string = ZENDESK_ERR_JSON_PARSE.format(raw_text=r.text.encode('utf-8'))
+            except:
+                msg_string = "Unable to parse response as a Json"
+            if len(msg_string) > 500:
+                msg_string = 'Error while parsing the response'
             return (action_result.set_status(phantom.APP_ERROR, msg_string, e), resp_json)
 
         # Handle any special HTTP error codes here, many devices return an HTTP error code like 204. The requests module treats these as error,
