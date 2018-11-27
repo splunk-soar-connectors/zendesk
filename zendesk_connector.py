@@ -274,8 +274,12 @@ class ZendeskConnector(BaseConnector):
             return action_result.get_status()
 
         # If 'fields' is specified, use it i.e. add it to the data that will be sent off
-        if (fields):
-            ticket.update(fields)
+        # If 'fields' is not a proper json i.e. some normal string or integer, it will throw an exception
+        try:
+            if (fields):
+                ticket.update(fields)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_FIELDS_JSON_PARSE, e)
 
         data = {'ticket': ticket}
 
