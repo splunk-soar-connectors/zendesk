@@ -97,9 +97,6 @@ class ZendeskConnector(BaseConnector):
     def _make_rest_call(self, endpoint, action_result, headers={}, params=None, data=None, method="get"):
         """ Function that makes the REST call to the device, generic function that can be called from various action handlers"""
 
-        # Get the config
-        config = self.get_config()
-
         # Create the headers
         headers.update(self._headers)
 
@@ -123,7 +120,7 @@ class ZendeskConnector(BaseConnector):
                     auth=(self._username, self._key),  # The authentication method, currently set to simple base authentication
                     data=json.dumps(data) if data else None,  # the data, converted to json string format if present, else just set to None
                     headers=headers,  # The headers to send in the HTTP call
-                    verify=config[phantom.APP_JSON_VERIFY],  # should cert verification be carried out?
+                    verify=True,  # cert verification should be true
                     params=params)  # uri parameters if any
         except Exception as e:
             return (action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_SERVER_CONNECTION, e), resp_json)

@@ -22,12 +22,11 @@
             "description": "Device URL including the port, e.g. https://myzendesk.enterprise.com",
             "required": true
         },
-        "verify_server_cert": {
-            "data_type": "boolean",
-            "description": "Verify server certificate",
-            "required": true,
+        "api_token": {
+            "data_type": "password",
             "order": 1,
-            "default": true
+            "description": "API Token",
+            "required": false
         },
         "username": {
             "data_type": "string",
@@ -39,12 +38,6 @@
             "data_type": "password",
             "order": 3,
             "description": "Password",
-            "required": false
-        },
-        "api_token": {
-            "data_type": "password",
-            "order": 4,
-            "description": "API Token",
             "required": false
         }
     },
