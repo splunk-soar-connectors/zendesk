@@ -391,6 +391,9 @@ class ZendeskConnector(BaseConnector):
             self.set_status(phantom.APP_ERROR, action_result.get_message())
             return phantom.APP_ERROR
 
+        if not response.get('ticket'):
+            return action_result.set_status(phantom.APP_ERROR, status_message='No data found')
+
         # Process the return result
         ticket = response['ticket']
 
