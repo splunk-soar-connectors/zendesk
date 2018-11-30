@@ -282,6 +282,16 @@ class ZendeskConnector(BaseConnector):
         # If 'fields' is not a proper json i.e. some normal string or integer, it will throw an exception
         try:
             if (fields):
+                if fields.get('custom_fields'):
+                    if not isinstance(fields['custom_fields'], list):
+                        return action_result.set_status(phantom.APP_ERROR, 'Invalid value for custom_field')
+
+                    ret_val, response = self._handle_custom_fields(action_result=action_result, custom_fields=fields['custom_fields'])
+
+                    if phantom.is_fail(ret_val):
+                        return action_result.get_status()
+
+                    fields['custom_fields'] = response
                 ticket.update(fields)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_FIELDS_JSON_PARSE, e)
@@ -311,6 +321,34 @@ class ZendeskConnector(BaseConnector):
         # set the status
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _handle_custom_fields(self, action_result, custom_fields):
+        """ This function is used to handle the custom fields in fields parameter.
+        """
+
+        endpoint = '/ticket_fields.json'
+
+        ret_val, response = self._make_rest_call(endpoint, action_result=action_result)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
+
+        response_list = []
+        for custom_field_item in custom_fields:
+            keys_list = custom_field_item.keys()
+            values_list = custom_field_item.values()
+
+            if not(keys_list) or len(keys_list) > 1:
+                return action_result.set_status(phantom.APP_ERROR, 'Invalid value for field custom_filed'), None
+
+            key = keys_list[0]
+            value = values_list[0]
+            for item in response.get('ticket_fields', []):
+                if item['raw_title'] == key:
+                    response_list.append({'id': item['id'], 'value': value})
+                    break
+
+        return phantom.APP_SUCCESS, response_list
+
     def _update_ticket(self, param):
         """ Action handler for the 'update ticket' action"""
 
@@ -339,6 +377,17 @@ class ZendeskConnector(BaseConnector):
         # If 'fields' is not specified, it is an error
         if (not fields):
             return action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_EMPTY_FIELDS)
+
+        if fields.get('custom_fields'):
+            if not isinstance(fields['custom_fields'], list):
+                return action_result.set_status(phantom.APP_ERROR, 'Invalid value for custom_field')
+
+            ret_val, response = self._handle_custom_fields(action_result=action_result, custom_fields=fields['custom_fields'])
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+            fields['custom_fields'] = response
 
         data = {'ticket': fields}
 

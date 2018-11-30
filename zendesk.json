@@ -709,6 +709,7 @@
         {
             "action": "create ticket",
             "description": "Create a Ticket",
+            "verbose": "If you want to assign the value to custom fields, use the following format in \"fields\" parameter<br>{\"custom_fields\": [{\"Test Field\": \"test field value\"}, {\"custom test field\": \"custom test field value\"}]}",
             "type": "generic",
             "identifier": "create_ticket",
             "read_only": false,
@@ -1335,6 +1336,7 @@
         {
             "action": "update ticket",
             "description": "Update ticket information",
+            "verbose": "Update an already existing ticket with the values that are specified in the 'fields' parameter. The user has to know the key names to set in this parameter. Please refer to the Zendesk Core API, Tickets section to learn about the fields that can be used to update or create tickets.<br>The JSON that is specified in the 'fields' parameter should have the keys and values specified in double quotes string format, except in case of boolean values, which should be either <i>true</i> or <i>false</i>.<br>Some examples: <ul><li>To close a ticket: {\"subject\": \"Zeus, multiple action need to be taken\", \"status\": \"solved\"}</li><li>To add a comment: {\"status\": \"open\", \"comment\": { \"body\": \"The smoke is very colorful.\", \"author_id\": 1 }}</li><li>To update custom fields value: {\"custom_fields\": [{\"Test Field\": \"test field value\"}, {\"custom test field\": \"custom test field value\"}]}</li></ul>",
             "type": "generic",
             "identifier": "update_ticket",
             "read_only": false,
@@ -1356,7 +1358,6 @@
                     "order": 2
                 }
             },
-            "verbose": "Update an already existing ticket with the values that are specified in the 'fields' parameter. The user has to know the key names to set in this parameter. Please refer to the Zendesk Core API, Tickets section to learn about the fields that can be used to update or create tickets.<br>The JSON that is specified in the 'fields' parameter should have the keys and values specified in double quotes string format, except in case of boolean values, which should be either <i>true</i> or <i>false</i>.<br>Some examples: <ul><li>To close a ticket: {\"subject\": \"Zeus, multiple action need to be taken\", \"status\": \"solved\"}</li><li>To add a comment: {\"status\": \"open\", \"comment\": { \"body\": \"The smoke is very colorful.\", \"author_id\": 1 }}</li></ul>",
             "render": {
                 "width": 12,
                 "title": "Update Ticket",
