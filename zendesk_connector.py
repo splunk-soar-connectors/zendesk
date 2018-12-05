@@ -1,16 +1,8 @@
-# --
-# File: zendesk/zendesk_connector.py
+# File: zendesk_connector.py
+# Copyright (c) 2016-2018 Splunk Inc.
 #
-# Copyright (c) Phantom Cyber Corporation, 2016-2018
-#
-# This unpublished material is proprietary to Phantom Cyber.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Phantom Cyber.
-#
-# --
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
 """ Code that implements calls made to the zendesk systems device"""
 
 # Phantom imports
@@ -105,9 +97,6 @@ class ZendeskConnector(BaseConnector):
     def _make_rest_call(self, endpoint, action_result, headers={}, params=None, data=None, method="get"):
         """ Function that makes the REST call to the device, generic function that can be called from various action handlers"""
 
-        # Get the config
-        config = self.get_config()
-
         # Create the headers
         headers.update(self._headers)
 
@@ -131,7 +120,7 @@ class ZendeskConnector(BaseConnector):
                     auth=(self._username, self._key),  # The authentication method, currently set to simple base authentication
                     data=json.dumps(data) if data else None,  # the data, converted to json string format if present, else just set to None
                     headers=headers,  # The headers to send in the HTTP call
-                    verify=config[phantom.APP_JSON_VERIFY],  # should cert verification be carried out?
+                    verify=True,  # cert verification should be true
                     params=params)  # uri parameters if any
         except Exception as e:
             return (action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_SERVER_CONNECTION, e), resp_json)
@@ -143,7 +132,12 @@ class ZendeskConnector(BaseConnector):
             resp_json = r.json()
         except Exception as e:
             # r.text is guaranteed to be NON None, it will be empty, but not None
-            msg_string = ZENDESK_ERR_JSON_PARSE.format(raw_text=r.text)
+            try:
+                msg_string = ZENDESK_ERR_JSON_PARSE.format(raw_text=r.text.encode('utf-8'))
+            except:
+                msg_string = "Unable to parse response as a Json"
+            if len(msg_string) > 500:
+                msg_string = 'Error while parsing the response'
             return (action_result.set_status(phantom.APP_ERROR, msg_string, e), resp_json)
 
         # Handle any special HTTP error codes here, many devices return an HTTP error code like 204. The requests module treats these as error,
@@ -285,8 +279,22 @@ class ZendeskConnector(BaseConnector):
             return action_result.get_status()
 
         # If 'fields' is specified, use it i.e. add it to the data that will be sent off
-        if (fields):
-            ticket.update(fields)
+        # If 'fields' is not a proper json i.e. some normal string or integer, it will throw an exception
+        try:
+            if (fields):
+                if fields.get('custom_fields'):
+                    if not isinstance(fields['custom_fields'], list):
+                        return action_result.set_status(phantom.APP_ERROR, 'Invalid value for custom_field')
+
+                    ret_val, response = self._handle_custom_fields(action_result=action_result, custom_fields=fields['custom_fields'])
+
+                    if phantom.is_fail(ret_val):
+                        return action_result.get_status()
+
+                    fields['custom_fields'] = response
+                ticket.update(fields)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_FIELDS_JSON_PARSE, e)
 
         data = {'ticket': ticket}
 
@@ -312,6 +320,34 @@ class ZendeskConnector(BaseConnector):
 
         # set the status
         return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _handle_custom_fields(self, action_result, custom_fields):
+        """ This function is used to handle the custom fields in fields parameter.
+        """
+
+        endpoint = '/ticket_fields.json'
+
+        ret_val, response = self._make_rest_call(endpoint, action_result=action_result)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
+
+        response_list = []
+        for custom_field_item in custom_fields:
+            keys_list = custom_field_item.keys()
+            values_list = custom_field_item.values()
+
+            if not(keys_list) or len(keys_list) > 1:
+                return action_result.set_status(phantom.APP_ERROR, 'Invalid value for field custom_filed'), None
+
+            key = keys_list[0]
+            value = values_list[0]
+            for item in response.get('ticket_fields', []):
+                if item['raw_title'] == key:
+                    response_list.append({'id': item['id'], 'value': value})
+                    break
+
+        return phantom.APP_SUCCESS, response_list
 
     def _update_ticket(self, param):
         """ Action handler for the 'update ticket' action"""
@@ -341,6 +377,17 @@ class ZendeskConnector(BaseConnector):
         # If 'fields' is not specified, it is an error
         if (not fields):
             return action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_EMPTY_FIELDS)
+
+        if fields.get('custom_fields'):
+            if not isinstance(fields['custom_fields'], list):
+                return action_result.set_status(phantom.APP_ERROR, 'Invalid value for custom_field')
+
+            ret_val, response = self._handle_custom_fields(action_result=action_result, custom_fields=fields['custom_fields'])
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+            fields['custom_fields'] = response
 
         data = {'ticket': fields}
 
@@ -392,6 +439,9 @@ class ZendeskConnector(BaseConnector):
             self.debug_print(action_result.get_message())
             self.set_status(phantom.APP_ERROR, action_result.get_message())
             return phantom.APP_ERROR
+
+        if not response.get('ticket'):
+            return action_result.set_status(phantom.APP_ERROR, status_message='No data found')
 
         # Process the return result
         ticket = response['ticket']
@@ -530,6 +580,7 @@ class ZendeskConnector(BaseConnector):
             ret_val = self._test_connectivity(param)
 
         return ret_val
+
 
 if __name__ == '__main__':
     """ Code that is executed when run in standalone debug mode

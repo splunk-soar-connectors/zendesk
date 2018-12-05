@@ -1,20 +1,20 @@
 {
     "appid": "c4478686-00ec-4a37-9c1f-f16f83abcf18",
     "name": "Zendesk",
-    "description": "This app allows ticket management on Zendesk by implementing actions such as <b>create ticket</b>, <b>list tickets</b>, <b>run query</b> and <b>get ticket</b>.",
+    "description": "This App allows for ticket management on Zendesk",
     "publisher": "Phantom",
     "type": "ticketing",
     "main_module": "zendesk_connector.pyc",
-    "app_version": "1.2.27",
-    "utctime_updated": "2018-01-26T00:51:15.000000Z",
+    "app_version": "1.2.28",
+    "utctime_updated": "2018-12-03T23:41:02.000000Z",
     "package_name": "phantom_zendesk",
     "product_vendor": "Zendesk",
     "product_name": "Zendesk",
     "product_version_regex": ".*",
-    "min_phantom_version": "3.0.190",
+    "min_phantom_version": "3.5.210",
     "logo": "logo_zendesk.svg",
     "logo_dark": "logo_zendesk_dark.svg",
-    "license": "Copyright (c) Phantom Cyber Corporation, 2016-2018",
+    "license": "Copyright (c) 2016-2018 Splunk Inc.",
     "configuration": {
         "url": {
             "data_type": "string",
@@ -22,12 +22,11 @@
             "description": "Device URL including the port, e.g. https://myzendesk.enterprise.com",
             "required": true
         },
-        "verify_server_cert": {
-            "data_type": "boolean",
-            "description": "Verify server certificate",
-            "required": true,
+        "api_token": {
+            "data_type": "password",
             "order": 1,
-            "default": true
+            "description": "API Token",
+            "required": false
         },
         "username": {
             "data_type": "string",
@@ -40,18 +39,12 @@
             "order": 3,
             "description": "Password",
             "required": false
-        },
-        "api_token": {
-            "data_type": "string",
-            "order": 4,
-            "description": "API Token",
-            "required": false
         }
     },
     "actions": [
         {
             "action": "test connectivity",
-            "description": "Validate the asset configuration for connectivity. This action runs a quick query on the device to check the connection and credentials.",
+            "description": "Validate the asset configuration for connectivity. This action runs a quick query on the device to check the connection and credentials",
             "type": "test",
             "identifier": "test_asset_connectivity",
             "read_only": true,
@@ -99,16 +92,116 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.parameter.query",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.parameter.page_number",
-                    "data_type": "numeric"
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.max_results_per_page",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        20
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.page_number",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.query",
+                    "data_type": "string",
+                    "example_values": [
+                        "status:open"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_attachments",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_channelback",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id_name",
+                    "data_type": "string",
+                    "column_order": 5,
+                    "column_name": "Assignee",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.brand_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1103787
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "column_order": 4,
+                    "column_name": "Created At",
+                    "example_values": [
+                        "2018-11-20T10:09:01Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "column_order": 6,
+                    "column_name": "Description",
+                    "example_values": [
+                        "ticket for moshah"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.due_at",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.external_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.forum_topic_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.group_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        28493297
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.has_incidents",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.id",
@@ -117,6 +210,128 @@
                     "column_order": 0,
                     "contains": [
                         "zendesk ticket id"
+                    ],
+                    "example_values": [
+                        1188
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.is_public",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.organization_id",
+                    "data_type": "numeric",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.priority",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.problem_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.raw_subject",
+                    "data_type": "string",
+                    "example_values": [
+                        "moshah ticket"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipient",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        369385135314
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id_name",
+                    "data_type": "string",
+                    "column_order": 7,
+                    "column_name": "Requester",
+                    "example_values": [
+                        "MOSHAH"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.result_type",
+                    "data_type": "string",
+                    "example_values": [
+                        "ticket"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_probability",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_rating",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "column_order": 3,
+                    "column_name": "Status",
+                    "example_values": [
+                        "open"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subject",
+                    "data_type": "string",
+                    "column_order": 2,
+                    "column_name": "Subject",
+                    "example_values": [
+                        "moshah ticket"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tags",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.ticket_form_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        181987
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.updated_at",
+                    "data_type": "string",
+                    "example_values": [
+                        "2018-11-20T12:08:58Z"
                     ]
                 },
                 {
@@ -127,119 +342,56 @@
                     "contains": [
                         "url",
                         "domain"
+                    ],
+                    "example_values": [
+                        "https://phantom.zendesk.com/api/v2/tickets/1188.json"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.subject",
-                    "data_type": "string",
-                    "column_order": 2,
-                    "column_name": "Subject"
-                },
-                {
-                    "data_path": "action_result.data.*.status",
-                    "data_type": "string",
-                    "column_order": 3,
-                    "column_name": "Status"
-                },
-                {
-                    "data_path": "action_result.data.*.created_at",
-                    "data_type": "string",
-                    "column_order": 4,
-                    "column_name": "Created At"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id_name",
-                    "data_type": "string",
-                    "column_order": 5,
-                    "column_name": "Assignee"
-                },
-                {
-                    "data_path": "action_result.data.*.description",
-                    "data_type": "string",
-                    "column_order": 6,
-                    "column_name": "Description"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id_name",
-                    "data_type": "string",
-                    "column_order": 7,
-                    "column_name": "Requester"
-                },
-                {
                     "data_path": "action_result.data.*.via.channel",
+                    "data_type": "string",
+                    "example_values": [
+                        "web"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.via.source.rel",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.tags",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.brand_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.group_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.priority",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.updated_at",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.raw_subject",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.submitter_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.has_incidents",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.allow_channelback",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.organization_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.returned_tickets",
+                    "data_type": "numeric",
+                    "example_values": [
+                        20
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.total_tickets",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1100
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Total tickets: 1100, Returned tickets: 20"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -272,12 +424,109 @@
             },
             "output": [
                 {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
                     "data_path": "action_result.parameter.max_results_per_page",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        100
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.page_number",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_attachments",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_channelback",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id_name",
+                    "data_type": "string",
+                    "column_order": 5,
+                    "column_name": "Assignee",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.brand_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1103787
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "column_order": 4,
+                    "column_name": "Created At",
+                    "example_values": [
+                        "2016-05-17T22:16:39Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "column_order": 6,
+                    "column_name": "Description",
+                    "example_values": [
+                        "\u3bd9\u3bdc\u3bd9\u3bdf"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.due_at",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.external_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.forum_topic_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.group_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        28493297
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.has_incidents",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.id",
@@ -286,6 +535,120 @@
                     "column_order": 0,
                     "contains": [
                         "zendesk ticket id"
+                    ],
+                    "example_values": [
+                        7
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.is_public",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.organization_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3853131587
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.priority",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.problem_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.raw_subject",
+                    "data_type": "string",
+                    "example_values": [
+                        "<b>bold?</b>not bold?"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipient",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id_name",
+                    "data_type": "string",
+                    "column_order": 7,
+                    "column_name": "Requester",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_probability",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_rating",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "column_order": 3,
+                    "column_name": "Status",
+                    "example_values": [
+                        "open"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subject",
+                    "data_type": "string",
+                    "column_order": 2,
+                    "column_name": "Subject",
+                    "example_values": [
+                        "<b>bold?</b>not bold?"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tags",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.ticket_form_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.updated_at",
+                    "data_type": "string",
+                    "example_values": [
+                        "2016-05-20T00:50:34Z"
                     ]
                 },
                 {
@@ -296,119 +659,49 @@
                     "contains": [
                         "url",
                         "domain"
+                    ],
+                    "example_values": [
+                        "https://phantom.zendesk.com/api/v2/tickets/7.json"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.subject",
-                    "data_type": "string",
-                    "column_order": 2,
-                    "column_name": "Subject"
-                },
-                {
-                    "data_path": "action_result.data.*.status",
-                    "data_type": "string",
-                    "column_order": 3,
-                    "column_name": "Status"
-                },
-                {
-                    "data_path": "action_result.data.*.created_at",
-                    "data_type": "string",
-                    "column_order": 4,
-                    "column_name": "Created At"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id_name",
-                    "data_type": "string",
-                    "column_order": 5,
-                    "column_name": "Assignee"
-                },
-                {
-                    "data_path": "action_result.data.*.description",
-                    "data_type": "string",
-                    "column_order": 6,
-                    "column_name": "Description"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id_name",
-                    "data_type": "string",
-                    "column_order": 7,
-                    "column_name": "Requester"
-                },
-                {
                     "data_path": "action_result.data.*.via.channel",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "web"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.tags",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.brand_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.group_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.priority",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.updated_at",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.raw_subject",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.submitter_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.has_incidents",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.allow_channelback",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.organization_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.message",
+                    "data_path": "action_result.data.*.via.source.rel",
                     "data_type": "string"
                 },
                 {
                     "data_path": "action_result.summary.total_tickets",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        100
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Total tickets: 100"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -416,6 +709,7 @@
         {
             "action": "create ticket",
             "description": "Create a Ticket",
+            "verbose": "If you want to assign the value to custom fields, use the following format in \"fields\" parameter<br>{\"custom_fields\": [{\"Test Field\": \"test field value\"}, {\"custom test field\": \"custom test field value\"}]}",
             "type": "generic",
             "identifier": "create_ticket",
             "read_only": false,
@@ -447,16 +741,108 @@
             },
             "output": [
                 {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "QA"
+                    ]
+                },
+                {
                     "data_path": "action_result.parameter.fields",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.parameter.description",
+                    "data_path": "action_result.parameter.subject",
+                    "data_type": "string",
+                    "example_values": [
+                        "test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_attachments",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_channelback",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id",
+                    "data_type": "numeric",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id_name",
+                    "data_type": "string",
+                    "column_order": 5,
+                    "column_name": "Assignee"
+                },
+                {
+                    "data_path": "action_result.data.*.brand_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1103787
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "column_order": 4,
+                    "column_name": "Created At",
+                    "example_values": [
+                        "2018-11-20T13:41:01Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "column_order": 6,
+                    "column_name": "Description",
+                    "example_values": [
+                        "QA"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.due_at",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.parameter.subject",
+                    "data_path": "action_result.data.*.external_id",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.forum_topic_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.group_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        28493297
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.has_incidents",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.id",
@@ -465,6 +851,123 @@
                     "column_order": 0,
                     "contains": [
                         "zendesk ticket id"
+                    ],
+                    "example_values": [
+                        1189
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.is_public",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.organization_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3853131587
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.priority",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.problem_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.raw_subject",
+                    "data_type": "string",
+                    "example_values": [
+                        "test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipient",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id_name",
+                    "data_type": "string",
+                    "column_order": 7,
+                    "column_name": "Requester",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_probability",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_rating",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "column_order": 3,
+                    "column_name": "Status",
+                    "example_values": [
+                        "new"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subject",
+                    "data_type": "string",
+                    "column_order": 2,
+                    "column_name": "Subject",
+                    "example_values": [
+                        "test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tags",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.ticket_form_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        181987
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.updated_at",
+                    "data_type": "string",
+                    "example_values": [
+                        "2018-11-20T13:41:01Z"
                     ]
                 },
                 {
@@ -475,119 +978,49 @@
                     "contains": [
                         "url",
                         "domain"
+                    ],
+                    "example_values": [
+                        "https://phantom.zendesk.com/api/v2/tickets/1189.json"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.subject",
-                    "data_type": "string",
-                    "column_order": 2,
-                    "column_name": "Subject"
-                },
-                {
-                    "data_path": "action_result.data.*.status",
-                    "data_type": "string",
-                    "column_order": 3,
-                    "column_name": "Status"
-                },
-                {
-                    "data_path": "action_result.data.*.created_at",
-                    "data_type": "string",
-                    "column_order": 4,
-                    "column_name": "Created At"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id_name",
-                    "data_type": "string",
-                    "column_order": 5,
-                    "column_name": "Assignee"
-                },
-                {
-                    "data_path": "action_result.data.*.description",
-                    "data_type": "string",
-                    "column_order": 6,
-                    "column_name": "Description"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id_name",
-                    "data_type": "string",
-                    "column_order": 7,
-                    "column_name": "Requester"
-                },
-                {
                     "data_path": "action_result.data.*.via.channel",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "api"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.tags",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.brand_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.group_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.priority",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.updated_at",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.raw_subject",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.submitter_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.has_incidents",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.allow_channelback",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.organization_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.message",
+                    "data_path": "action_result.data.*.via.source.rel",
                     "data_type": "string"
                 },
                 {
                     "data_path": "action_result.summary.created_ticket_id",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1189
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Created ticket id: 1189"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -618,10 +1051,104 @@
             },
             "output": [
                 {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
                     "data_path": "action_result.parameter.id",
                     "data_type": "string",
                     "contains": [
                         "zendesk ticket id"
+                    ],
+                    "example_values": [
+                        "12"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_attachments",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_channelback",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id_name",
+                    "data_type": "string",
+                    "column_order": 5,
+                    "column_name": "Assignee",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.brand_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1103787
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "column_order": 4,
+                    "column_name": "Created At",
+                    "example_values": [
+                        "2016-05-19T00:15:53Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "column_order": 6,
+                    "column_name": "Description",
+                    "example_values": [
+                        "Remediate quickly"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.due_at",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.external_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.forum_topic_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.group_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        28493297
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.has_incidents",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
                     ]
                 },
                 {
@@ -631,6 +1158,120 @@
                     "column_order": 0,
                     "contains": [
                         "zendesk ticket id"
+                    ],
+                    "example_values": [
+                        12
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.is_public",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.organization_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3853131587
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.priority",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.problem_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.raw_subject",
+                    "data_type": "string",
+                    "example_values": [
+                        "Zeus detections"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipient",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id_name",
+                    "data_type": "string",
+                    "column_order": 7,
+                    "column_name": "Requester",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_probability",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_rating",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "column_order": 3,
+                    "column_name": "Status",
+                    "example_values": [
+                        "open"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subject",
+                    "data_type": "string",
+                    "column_order": 2,
+                    "column_name": "Subject",
+                    "example_values": [
+                        "Zeus detections"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tags",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.ticket_form_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.updated_at",
+                    "data_type": "string",
+                    "example_values": [
+                        "2016-05-19T00:15:53Z"
                     ]
                 },
                 {
@@ -641,119 +1282,53 @@
                     "contains": [
                         "url",
                         "domain"
+                    ],
+                    "example_values": [
+                        "https://phantom.zendesk.com/api/v2/tickets/12.json"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.subject",
-                    "data_type": "string",
-                    "column_order": 2,
-                    "column_name": "Subject"
-                },
-                {
-                    "data_path": "action_result.data.*.status",
-                    "data_type": "string",
-                    "column_order": 3,
-                    "column_name": "Status"
-                },
-                {
-                    "data_path": "action_result.data.*.created_at",
-                    "data_type": "string",
-                    "column_order": 4,
-                    "column_name": "Created At"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id_name",
-                    "data_type": "string",
-                    "column_order": 5,
-                    "column_name": "Assignee"
-                },
-                {
-                    "data_path": "action_result.data.*.description",
-                    "data_type": "string",
-                    "column_order": 6,
-                    "column_name": "Description"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id_name",
-                    "data_type": "string",
-                    "column_order": 7,
-                    "column_name": "Requester"
-                },
-                {
                     "data_path": "action_result.data.*.via.channel",
+                    "data_type": "string",
+                    "example_values": [
+                        "api"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.via.source.rel",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.tags",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.brand_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.group_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.priority",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.updated_at",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.raw_subject",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.submitter_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.has_incidents",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.allow_channelback",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.organization_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.queried_ticket_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        12
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.total_tickets",
                     "data_type": "numeric"
                 },
                 {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Queried ticket id: 12"
+                    ]
+                },
+                {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"
@@ -761,6 +1336,7 @@
         {
             "action": "update ticket",
             "description": "Update ticket information",
+            "verbose": "Update an already existing ticket with the values that are specified in the 'fields' parameter. The user has to know the key names to set in this parameter. Please refer to the Zendesk Core API, Tickets section to learn about the fields that can be used to update or create tickets.<br>The JSON that is specified in the 'fields' parameter should have the keys and values specified in double quotes string format, except in case of boolean values, which should be either <i>true</i> or <i>false</i>.<br>Some examples: <ul><li>To close a ticket: {\"subject\": \"Zeus, multiple action need to be taken\", \"status\": \"solved\"}</li><li>To add a comment: {\"status\": \"open\", \"comment\": { \"body\": \"The smoke is very colorful.\", \"author_id\": 1 }}</li><li>To update custom fields value: {\"custom_fields\": [{\"Test Field\": \"test field value\"}, {\"custom test field\": \"custom test field value\"}]}</li></ul>",
             "type": "generic",
             "identifier": "update_ticket",
             "read_only": false,
@@ -782,7 +1358,6 @@
                     "order": 2
                 }
             },
-            "verbose": "Update an already existing ticket with the values that are specified in the 'fields' parameter. The user has to know the key names to set in this parameter. Please refer to the Zendesk Core API, Tickets section to learn about the fields that can be used to update or create tickets.<br>The JSON that is specified in the 'fields' parameter should have the keys and values specified in double quotes string format, except in case of boolean values, which should be either <i>true</i> or <i>false</i>.<br>Some examples: <ul><li>To close a ticket: {\"subject\": \"Zeus, multiple action need to be taken\", \"status\": \"solved\"}</li><li>To add a comment: {\"status\": \"open\", \"comment\": { \"body\": \"The smoke is very colorful.\", \"author_id\": 1 }}</li></ul>",
             "render": {
                 "width": 12,
                 "title": "Update Ticket",
@@ -791,14 +1366,111 @@
             },
             "output": [
                 {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
                     "data_path": "action_result.parameter.fields",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "{\"subject\": \"Zeus\"}"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.id",
                     "data_type": "string",
                     "contains": [
                         "zendesk ticket id"
+                    ],
+                    "example_values": [
+                        "9"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_attachments",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.allow_channelback",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignee_id_name",
+                    "data_type": "string",
+                    "column_order": 5,
+                    "column_name": "Assignee",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.brand_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1103787
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "column_order": 4,
+                    "column_name": "Created At",
+                    "example_values": [
+                        "2016-05-18T22:32:57Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "column_order": 6,
+                    "column_name": "Description",
+                    "example_values": [
+                        "Remediate quickly"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.due_at",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.external_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.forum_topic_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.group_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        28493297
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.has_incidents",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
                     ]
                 },
                 {
@@ -808,6 +1480,120 @@
                     "column_order": 0,
                     "contains": [
                         "zendesk ticket id"
+                    ],
+                    "example_values": [
+                        9
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.is_public",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.organization_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3853131587
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.priority",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.problem_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.raw_subject",
+                    "data_type": "string",
+                    "example_values": [
+                        "Zeus"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipient",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.requester_id_name",
+                    "data_type": "string",
+                    "column_order": 7,
+                    "column_name": "Requester",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_probability",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.satisfaction_rating",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "column_order": 3,
+                    "column_name": "Status",
+                    "example_values": [
+                        "open"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.subject",
+                    "data_type": "string",
+                    "column_order": 2,
+                    "column_name": "Subject",
+                    "example_values": [
+                        "Zeus"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5980690157
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.submitter_id_name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tags",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.ticket_form_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.updated_at",
+                    "data_type": "string",
+                    "example_values": [
+                        "2018-11-16T10:38:57Z"
                     ]
                 },
                 {
@@ -818,106 +1604,20 @@
                     "contains": [
                         "url",
                         "domain"
+                    ],
+                    "example_values": [
+                        "https://phantom.zendesk.com/api/v2/tickets/9.json"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.subject",
-                    "data_type": "string",
-                    "column_order": 2,
-                    "column_name": "Subject"
-                },
-                {
-                    "data_path": "action_result.data.*.status",
-                    "data_type": "string",
-                    "column_order": 3,
-                    "column_name": "Status"
-                },
-                {
-                    "data_path": "action_result.data.*.created_at",
-                    "data_type": "string",
-                    "column_order": 4,
-                    "column_name": "Created At"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.assignee_id_name",
-                    "data_type": "string",
-                    "column_order": 5,
-                    "column_name": "Assignee"
-                },
-                {
-                    "data_path": "action_result.data.*.description",
-                    "data_type": "string",
-                    "column_order": 6,
-                    "column_name": "Description"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.requester_id_name",
-                    "data_type": "string",
-                    "column_order": 7,
-                    "column_name": "Requester"
-                },
-                {
                     "data_path": "action_result.data.*.via.channel",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "api"
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.tags",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.brand_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.group_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.priority",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.updated_at",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.raw_subject",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.submitter_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.data.*.has_incidents",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.allow_channelback",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.data.*.organization_id",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.message",
+                    "data_path": "action_result.data.*.via.source.rel",
                     "data_type": "string"
                 },
                 {
@@ -925,12 +1625,32 @@
                     "data_type": "numeric"
                 },
                 {
+                    "data_path": "action_result.summary.updated_ticket_id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        9
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Updated ticket id: 9"
+                    ]
+                },
+                {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "versions": "EQ(*)"
