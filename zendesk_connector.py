@@ -1,5 +1,5 @@
 # File: zendesk_connector.py
-# Copyright (c) 2016-2018 Splunk Inc.
+# Copyright (c) 2016-2021 Splunk Inc.
 #
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
@@ -334,8 +334,8 @@ class ZendeskConnector(BaseConnector):
 
         response_list = []
         for custom_field_item in custom_fields:
-            keys_list = custom_field_item.keys()
-            values_list = custom_field_item.values()
+            keys_list = list(custom_field_item.keys())
+            values_list = list(custom_field_item.values())
 
             if not(keys_list) or len(keys_list) > 1:
                 return action_result.set_status(phantom.APP_ERROR, 'Invalid value for field custom_filed'), None
@@ -613,6 +613,6 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
 
         # Dump the return value
-        print ret_val
+        print(ret_val)
 
     exit(0)
