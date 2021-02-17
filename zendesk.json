@@ -12,7 +12,7 @@
     "product_name": "Zendesk",
     "product_version_regex": ".*",
     "min_phantom_version": "4.9.39220",
-    "latest_tested_versions": [],
+    "latest_tested_versions": ["ZenDesk Support Cloud v10272"],
     "python_version": "3",
     "logo": "logo_zendesk.svg",
     "logo_dark": "logo_zendesk_dark.svg",
@@ -389,6 +389,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -698,6 +718,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -752,7 +792,10 @@
                 },
                 {
                     "data_path": "action_result.parameter.fields",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "fields : \"{\"status\": \"open\", \"comment\": { \"body\": \"The is testing body.\", \"author_id\": 1 }}\""
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.subject",
@@ -1014,6 +1057,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -1321,6 +1384,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -1642,6 +1725,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
