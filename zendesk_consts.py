@@ -41,4 +41,4 @@ ZENDESK_USING_BASE_URL = "Using url: {base_url}"
 ZENDESK_ERR_JSON_PARSE = "Unable to parse reply as a Json, raw string reply: '{raw_text}'"
 
 DEFAULT_MAX_RESULTS = 100
-ZENDESK_TICKET_FOOTNOTE = "Added by Splunk Phantom for container id: "
+ZENDESK_TICKET_FOOTNOTE = "Added by Phantom for container id: "
