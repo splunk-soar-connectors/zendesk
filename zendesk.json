@@ -2,19 +2,23 @@
     "appid": "c4478686-00ec-4a37-9c1f-f16f83abcf18",
     "name": "Zendesk",
     "description": "This App allows for ticket management on Zendesk",
-    "publisher": "Phantom",
+    "publisher": "Splunk",
     "type": "ticketing",
-    "main_module": "zendesk_connector.pyc",
-    "app_version": "1.2.28",
-    "utctime_updated": "2018-12-03T23:41:02.000000Z",
+    "main_module": "zendesk_connector.py",
+    "app_version": "2.0.1",
+    "utctime_updated": "2021-02-17T18:40:51.000000Z",
     "package_name": "phantom_zendesk",
     "product_vendor": "Zendesk",
     "product_name": "Zendesk",
     "product_version_regex": ".*",
-    "min_phantom_version": "3.5.210",
+    "min_phantom_version": "4.9.39220",
+    "latest_tested_versions": [
+        "ZenDesk Support Cloud v10272"
+    ],
+    "python_version": "3",
     "logo": "logo_zendesk.svg",
     "logo_dark": "logo_zendesk_dark.svg",
-    "license": "Copyright (c) 2016-2018 Splunk Inc.",
+    "license": "Copyright (c) 2016-2021 Splunk Inc.",
     "configuration": {
         "url": {
             "data_type": "string",
@@ -25,8 +29,7 @@
         "api_token": {
             "data_type": "password",
             "order": 1,
-            "description": "API Token",
-            "required": false
+            "description": "API Token"
         },
         "username": {
             "data_type": "string",
@@ -37,8 +40,7 @@
         "password": {
             "data_type": "password",
             "order": 3,
-            "description": "Password",
-            "required": false
+            "description": "Password"
         }
     },
     "actions": [
@@ -64,7 +66,6 @@
                     "description": "Query to search tickets",
                     "data_type": "string",
                     "order": 0,
-                    "primary": true,
                     "required": true
                 },
                 "ph": {
@@ -95,7 +96,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -225,13 +227,11 @@
                 },
                 {
                     "data_path": "action_result.data.*.organization_id",
-                    "data_type": "numeric",
-                    "example_values": []
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.data.*.priority",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.problem_id",
@@ -324,8 +324,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.updated_at",
@@ -392,6 +391,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -427,7 +446,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -557,8 +577,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.priority",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.problem_id",
@@ -641,8 +660,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.updated_at",
@@ -702,6 +720,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -709,7 +747,7 @@
         {
             "action": "create ticket",
             "description": "Create a Ticket",
-            "verbose": "If you want to assign the value to custom fields, use the following format in \"fields\" parameter<br>{\"custom_fields\": [{\"Test Field\": \"test field value\"}, {\"custom test field\": \"custom test field value\"}]}",
+            "verbose": "If you want to assign the value to custom fields, use the following format in \"fields\" parameter<br>{\"custom_fields\": [{\"Test Field\": \"test field value\"}, {\"custom test field\": \"custom test field value\"}]}.",
             "type": "generic",
             "identifier": "create_ticket",
             "read_only": false,
@@ -718,7 +756,6 @@
                     "description": "Ticket Subject",
                     "data_type": "string",
                     "required": true,
-                    "primary": true,
                     "order": 0
                 },
                 "description": {
@@ -744,7 +781,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -756,7 +794,10 @@
                 },
                 {
                     "data_path": "action_result.parameter.fields",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "fields : \"{\"status\": \"open\", \"comment\": { \"body\": \"The is testing body.\", \"author_id\": 1 }}\""
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.subject",
@@ -783,8 +824,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.assignee_id",
-                    "data_type": "numeric",
-                    "example_values": []
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.data.*.assignee_id_name",
@@ -873,8 +913,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.priority",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.problem_id",
@@ -960,8 +999,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.updated_at",
@@ -1021,6 +1059,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -1054,7 +1112,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -1180,8 +1239,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.priority",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.problem_id",
@@ -1264,8 +1322,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.updated_at",
@@ -1329,6 +1386,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -1355,7 +1432,7 @@
                     "description": "Json containing field values",
                     "data_type": "string",
                     "required": true,
-                    "order": 2
+                    "order": 1
                 }
             },
             "render": {
@@ -1369,7 +1446,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -1502,8 +1580,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.priority",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.problem_id",
@@ -1586,8 +1663,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.type",
-                    "data_type": "string",
-                    "example_values": []
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.updated_at",
@@ -1651,6 +1727,26 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_value": "test field value"
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_value": 360011869194
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
