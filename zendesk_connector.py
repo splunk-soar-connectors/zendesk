@@ -16,14 +16,13 @@
 
 # Phantom imports
 import phantom.app as phantom
-from phantom.base_connector import BaseConnector
+import requests
+import simplejson as json
 from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
 
 # THIS Connector imports
 from zendesk_consts import *
-
-import requests
-import simplejson as json
 
 
 class ZendeskConnector(BaseConnector):
@@ -103,8 +102,11 @@ class ZendeskConnector(BaseConnector):
 
         return error_details
 
-    def _make_rest_call(self, endpoint, action_result, headers={}, params=None, data=None, method="get"):
+    def _make_rest_call(self, endpoint, action_result, headers=None, params=None, data=None, method="get"):
         """ Function that makes the REST call to the device, generic function that can be called from various action handlers"""
+
+        if headers is None:
+            headers = {}
 
         # Create the headers
         headers.update(self._headers)
@@ -125,7 +127,8 @@ class ZendeskConnector(BaseConnector):
 
         # Make the call
         try:
-            r = request_func(self._base_url + self._api_uri + endpoint,  # The complete url is made up of the base_url, the api url and the endpiont
+            r = request_func(
+                    self._base_url + self._api_uri + endpoint,  # The complete url is made up of the base_url, the api url and the endpiont
                     auth=(self._username, self._key),  # The authentication method, currently set to simple base authentication
                     data=json.dumps(data) if data else None,  # the data, converted to json string format if present, else just set to None
                     headers=headers,  # The headers to send in the HTTP call
@@ -136,7 +139,8 @@ class ZendeskConnector(BaseConnector):
 
         # self.debug_print('REST url: {0}'.format(r.url))
 
-        # Try a json parse, since most REST API's give back the data in json, if the device does not return JSONs, then need to implement parsing them some other manner
+        # Try a json parse, since most REST API's give back the data in json.
+        # If the device does not return JSONs, then need to implement parsing them some other manner.
         try:
             resp_json = r.json()
         except Exception as e:
@@ -599,6 +603,7 @@ if __name__ == '__main__':
 
     # Imports
     import sys
+
     import pudb
 
     # Breakpoint at runtime
@@ -624,4 +629,4 @@ if __name__ == '__main__':
         # Dump the return value
         print(ret_val)
 
-    exit(0)
+    sys.exit(0)

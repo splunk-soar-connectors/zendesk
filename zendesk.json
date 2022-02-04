@@ -11,7 +11,7 @@
     "product_vendor": "Zendesk",
     "product_name": "Zendesk",
     "product_version_regex": ".*",
-    "min_phantom_version": "4.9.39220",
+    "min_phantom_version": "5.1.0",
     "fips_compliant": true,
     "latest_tested_versions": [
         "ZenDesk Support Cloud v10272"
@@ -19,7 +19,7 @@
     "python_version": "3",
     "logo": "logo_zendesk.svg",
     "logo_dark": "logo_zendesk_dark.svg",
-    "license": "Copyright (c) 2016-2021 Splunk Inc.",
+    "license": "Copyright (c) 2016-2022 Splunk Inc.",
     "configuration": {
         "url": {
             "data_type": "string",
