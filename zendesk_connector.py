@@ -1,6 +1,6 @@
 # File: zendesk_connector.py
 #
-# Copyright (c) 2016-2022 Splunk Inc.
+# Copyright (c) 2016-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
 # THIS Connector imports
-from zendesk_consts import *
+import zendesk_consts as consts
 
 
 class ZendeskConnector(BaseConnector):
@@ -35,9 +35,15 @@ class ZendeskConnector(BaseConnector):
     ACTION_ID_RUN_QUERY = "run_query"
 
     def __init__(self):
-        """ """
 
         self.__id_to_name = {}
+        self._base_url = None
+        self._host = None
+        self._headers = None
+        self._api_uri = None
+        self._key = None
+        self._username = None
+        self._auth_method = None
 
         # Call the BaseConnectors init first
         super(ZendeskConnector, self).__init__()
@@ -48,31 +54,29 @@ class ZendeskConnector(BaseConnector):
         config = self.get_config()
 
         # Get the Base URL from the asset config and so some cleanup
-        self._base_url = config[ZENDESK_JSON_DEVICE_URL]
-        if (self._base_url.endswith('/')):
-            self._base_url = self._base_url[:-1]
+        self._base_url = config[consts.ZENDESK_JSON_DEVICE_URL].rstrip('/')
 
-        # The host member extacts the host from the URL, is used in creating status messages
+        # The host member extracts the host from the URL, is used in creating status messages
         self._host = self._base_url[self._base_url.find('//') + 2:]
 
         # The headers, initialize them here once and use them for all other REST calls
         self._headers = {'Accept': 'application/json'}
 
         # The common part after the base url, but before the specific endpoint
-        # Intiliazed here and used on every REST endpoint calls
+        # Initialized here and used on every REST endpoint calls
         self._api_uri = '/api/v2'
 
-        password = config.get(phantom.APP_JSON_PASSWORD)
-        api_token = config.get(ZENDESK_JSON_API_TOKEN)
+        password = config.get(consts.ZENDESK_JSON_PASSWORD)
+        api_token = config.get(consts.ZENDESK_JSON_API_TOKEN)
 
-        if ((not password) and (not api_token)):
+        if not (password or api_token):
             return self.set_status(phantom.APP_ERROR, "Please specify one of either 'Password' or 'API Token'")
 
-        self._username = config[phantom.APP_JSON_USERNAME]
+        self._username = config[consts.ZENDESK_JSON_USERNAME]
 
         self._auth_method = "password"
 
-        if (password):
+        if password:
             self._key = password
         else:
             self._key = api_token
@@ -81,29 +85,9 @@ class ZendeskConnector(BaseConnector):
 
         return phantom.APP_SUCCESS
 
-    def _get_error_details(self, resp_json):
-        """ Function that parses the error json recieved from the device and placed into a json"""
-
-        error_details = {"message": "Not Found", "detail": "Not supplied"}
-
-        if (not resp_json):
-            return error_details
-
-        error_info = resp_json.get("error")
-
-        if (not error_info):
-            return error_details
-
-        if ('message' in error_info):
-            error_details['message'] = error_info['message']
-
-        if ('detail' in error_info):
-            error_details['detail'] = error_info['detail']
-
-        return error_details
-
     def _make_rest_call(self, endpoint, action_result, headers=None, params=None, data=None, method="get"):
-        """ Function that makes the REST call to the device, generic function that can be called from various action handlers"""
+        """ Function that makes the REST call to the device, generic function that can be called from various action
+        handlers"""
 
         if headers is None:
             headers = {}
@@ -111,7 +95,7 @@ class ZendeskConnector(BaseConnector):
         # Create the headers
         headers.update(self._headers)
 
-        if (method in ['put', 'post']):
+        if method in consts.ZENDESK_REQUEST_METHODS:
             headers.update({'Content-Type': 'application/json'})
 
         resp_json = None
@@ -119,9 +103,9 @@ class ZendeskConnector(BaseConnector):
         # get or post or put, whatever the caller asked us to use, if not specified the default will be 'get'
         request_func = getattr(requests, method)
 
-        # handle the error in case the caller specified a non-existant method
-        if (not request_func):
-            action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_API_UNSUPPORTED_METHOD, method=method)
+        # handle the error in case the caller specified a non-existent method
+        if not request_func:
+            action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_API_UNSUPPORTED_METHOD, method=method)
 
         self.save_progress('Using {0} for authentication'.format(self._auth_method))
 
@@ -135,7 +119,7 @@ class ZendeskConnector(BaseConnector):
                     verify=True,  # cert verification should be true
                     params=params)  # uri parameters if any
         except Exception as e:
-            return (action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_SERVER_CONNECTION, e), resp_json)
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_SERVER_CONNECTION, e), resp_json
 
         # self.debug_print('REST url: {0}'.format(r.url))
 
@@ -146,35 +130,34 @@ class ZendeskConnector(BaseConnector):
         except Exception as e:
             # r.text is guaranteed to be NON None, it will be empty, but not None
             try:
-                msg_string = ZENDESK_ERR_JSON_PARSE.format(raw_text=r.text.encode('utf-8'))
+                msg_string = consts.ZENDESK_ERR_JSON_PARSE.format(raw_text=r.text.encode('utf-8'))
             except:
                 msg_string = "Unable to parse response as a Json"
             if len(msg_string) > 500:
                 msg_string = 'Error while parsing the response'
-            return (action_result.set_status(phantom.APP_ERROR, msg_string, e), resp_json)
+            return action_result.set_status(phantom.APP_ERROR, msg_string, e), resp_json
 
-        # Handle any special HTTP error codes here, many devices return an HTTP error code like 204. The requests module treats these as error,
-        # so handle them here before anything else, uncomment the following lines in such cases
-        # if (r.status_code == 201):
-        #     return (phantom.APP_SUCCESS, resp_json)
+        if r.status_code in consts.ZENDESK_EMPTY_RESPONSE_STATUS_CODES:
+            return phantom.APP_SUCCESS, resp_json
 
         # Handle/process any errors that we get back from the device
-        if (200 <= r.status_code <= 399):
+        if 200 <= r.status_code <= 399:
             # Success
-            return (phantom.APP_SUCCESS, resp_json)
+            return phantom.APP_SUCCESS, resp_json
 
         # Failure
         action_result.add_data(resp_json)
 
         details = json.dumps(resp_json).replace('{', '').replace('}', '')
 
-        return (action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_FROM_SERVER.format(status=r.status_code, detail=details)), resp_json)
+        return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_FROM_SERVER
+                                        .format(status=r.status_code, detail=details)), resp_json
 
     def _test_connectivity(self, param):
         """ Function that handles the test connectivity action, it is much simpler than other action handlers."""
 
         # Progress
-        self.save_progress(ZENDESK_USING_BASE_URL, base_url=self._base_url)
+        self.save_progress(consts.ZENDESK_USING_BASE_URL, base_url=self._base_url)
 
         # Connectivity
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
@@ -188,13 +171,13 @@ class ZendeskConnector(BaseConnector):
         action_result = ActionResult()
 
         # Progress message, since it is test connectivity, it pays to be verbose
-        self.save_progress(ZENDESK_MSG_GET_INCIDENT_TEST)
+        self.save_progress(consts.ZENDESK_MSG_GET_INCIDENT_TEST)
 
         # Make the rest endpoint call
         ret_val, response = self._make_rest_call(endpoint, action_result, params=params)
 
         # Process errors
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
 
             # Dump error messages in the log
             self.debug_print(action_result.get_message())
@@ -203,30 +186,30 @@ class ZendeskConnector(BaseConnector):
             self.set_status(phantom.APP_ERROR, action_result.get_message())
 
             # Append the message to display
-            self.append_to_message(ZENDESK_ERR_CONNECTIVITY_TEST)
+            self.append_to_message(consts.ZENDESK_ERR_CONNECTIVITY_TEST)
 
             # return error
             return phantom.APP_ERROR
 
         # Set the status of the connector result
-        return self.set_status_save_progress(phantom.APP_SUCCESS, ZENDESK_SUCC_CONNECTIVITY_TEST)
+        return self.set_status_save_progress(phantom.APP_SUCCESS, consts.ZENDESK_SUCC_CONNECTIVITY_TEST)
 
     def _get_fields(self, param, action_result):
         """ Validates the field parameter that is a json, created a function to make the caller code cleaner"""
 
-        fields = param.get(ZENDESK_JSON_FIELDS)
+        fields = param.get(consts.ZENDESK_JSON_FIELDS)
 
         # fields is an optional field
-        if (not fields):
-            return (phantom.APP_SUCCESS, None)
+        if not fields:
+            return phantom.APP_SUCCESS, None
 
         # we take in as a dictionary string, first try to load it as is
         try:
             fields = json.loads(fields)
         except Exception as e:
-            return (action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_FIELDS_JSON_PARSE, e), None)
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_FIELDS_JSON_PARSE, e), None
 
-        return (phantom.APP_SUCCESS, fields)
+        return phantom.APP_SUCCESS, fields
 
     def _add_names_to_ids(self, ticket):
         """ Function parses the ticket and adds names to all the ids present in it """
@@ -241,7 +224,7 @@ class ZendeskConnector(BaseConnector):
 
             user_name = self.__id_to_name.get(user_id)
 
-            if (user_name):
+            if user_name:
                 ticket[key_name] = user_name
                 continue
 
@@ -251,15 +234,15 @@ class ZendeskConnector(BaseConnector):
 
             # Make the rest call
             ret_val, response = self._make_rest_call(endpoint, user_details_ar)
-            if (phantom.is_fail(ret_val)):
+            if phantom.is_fail(ret_val):
                 continue
 
             user = response.get('user')
-            if (not user):
+            if not user:
                 continue
 
             ticket[key_name] = user.get('name')
-            if (ticket[key_name]):
+            if ticket[key_name]:
                 self.__id_to_name[user_id] = ticket[key_name]
 
         return
@@ -274,7 +257,7 @@ class ZendeskConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Progress
-        self.save_progress(ZENDESK_USING_BASE_URL, base_url=self._base_url)
+        self.save_progress(consts.ZENDESK_USING_BASE_URL, base_url=self._base_url)
 
         # Connectivity
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
@@ -282,19 +265,19 @@ class ZendeskConnector(BaseConnector):
         # Set the endpoint
         endpoint = '/tickets.json'
 
-        ticket = {'subject': param[ZENDESK_JSON_SUBJECT], 'comment': {'body': param[ZENDESK_JSON_DESCRIPTION]}}
+        ticket = {'subject': param[consts.ZENDESK_JSON_SUBJECT], 'comment': {'body': param[consts.ZENDESK_JSON_DESCRIPTION]}}
 
         # Parse and set the fields parameter, it is optional
         ret_val, fields = self._get_fields(param, action_result)
 
         # Process error
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
         # If 'fields' is specified, use it i.e. add it to the data that will be sent off
         # If 'fields' is not a proper json i.e. some normal string or integer, it will throw an exception
         try:
-            if (fields):
+            if fields:
                 if fields.get('custom_fields'):
                     if not isinstance(fields['custom_fields'], list):
                         return action_result.set_status(phantom.APP_ERROR, 'Invalid value for custom_field')
@@ -307,7 +290,7 @@ class ZendeskConnector(BaseConnector):
                     fields['custom_fields'] = response
                 ticket.update(fields)
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_FIELDS_JSON_PARSE, e)
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_FIELDS_JSON_PARSE, e)
 
         data = {'ticket': ticket}
 
@@ -315,7 +298,7 @@ class ZendeskConnector(BaseConnector):
         ret_val, response = self._make_rest_call(endpoint, action_result, data=data, method="post")
 
         # Process/parse the errors encountered while making the REST call.
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             self.debug_print(action_result.get_message())
             self.set_status(phantom.APP_ERROR, action_result.get_message())
             return phantom.APP_ERROR
@@ -324,7 +307,7 @@ class ZendeskConnector(BaseConnector):
         created_ticket = response['ticket']
 
         # Set the summary in the action_result
-        action_result.set_summary({ZENDESK_JSON_NEW_TICKET_ID: created_ticket['id']})
+        action_result.set_summary({consts.ZENDESK_JSON_NEW_TICKET_ID: created_ticket['id']})
 
         self._add_names_to_ids(created_ticket)
 
@@ -350,7 +333,7 @@ class ZendeskConnector(BaseConnector):
             keys_list = list(custom_field_item.keys())
             values_list = list(custom_field_item.values())
 
-            if not(keys_list) or len(keys_list) > 1:
+            if not keys_list or len(keys_list) > 1:
                 return action_result.set_status(phantom.APP_ERROR, 'Invalid value for field custom_filed'), None
 
             key = keys_list[0]
@@ -372,24 +355,23 @@ class ZendeskConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Progress
-        self.save_progress(ZENDESK_USING_BASE_URL, base_url=self._base_url)
+        self.save_progress(consts.ZENDESK_USING_BASE_URL, base_url=self._base_url)
 
         # Connectivity
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
 
         # set the endpoint
-        endpoint = '/tickets/{0}.json'.format(param[ZENDESK_JSON_TICKET_ID])
+        endpoint = '/tickets/{0}.json'.format(param[consts.ZENDESK_JSON_TICKET_ID])
 
         # Parse and set the fields parameter, it is required for this action
         ret_val, fields = self._get_fields(param, action_result)
 
         # Process error
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        # If 'fields' is not specified, it is an error
-        if (not fields):
-            return action_result.set_status(phantom.APP_ERROR, ZENDESK_ERR_EMPTY_FIELDS)
+        if not fields:
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_EMPTY_FIELDS)
 
         if fields.get('custom_fields'):
             if not isinstance(fields['custom_fields'], list):
@@ -408,7 +390,7 @@ class ZendeskConnector(BaseConnector):
         ret_val, response = self._make_rest_call(endpoint, action_result, data=data, method="put")
 
         # Process the error
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             self.debug_print(action_result.get_message())
             return action_result.get_status()
 
@@ -418,7 +400,7 @@ class ZendeskConnector(BaseConnector):
         self._add_names_to_ids(ticket)
 
         # Set the summary
-        action_result.set_summary({ZENDESK_JSON_UPDATED_TICKET_ID: ticket['id']})
+        action_result.set_summary({consts.ZENDESK_JSON_UPDATED_TICKET_ID: ticket['id']})
 
         # Add the data
         action_result.add_data(ticket)
@@ -436,19 +418,19 @@ class ZendeskConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Progress
-        self.save_progress(ZENDESK_USING_BASE_URL, base_url=self._base_url)
+        self.save_progress(consts.ZENDESK_USING_BASE_URL, base_url=self._base_url)
 
         # Connectivity
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
 
         # set the endpoint
-        endpoint = '/tickets/{0}.json'.format(param[ZENDESK_JSON_TICKET_ID])
+        endpoint = '/tickets/{0}.json'.format(param[consts.ZENDESK_JSON_TICKET_ID])
 
         # Make the rest call
         ret_val, response = self._make_rest_call(endpoint, action_result)
 
         # Process the error
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             self.debug_print(action_result.get_message())
             self.set_status(phantom.APP_ERROR, action_result.get_message())
             return phantom.APP_ERROR
@@ -462,7 +444,7 @@ class ZendeskConnector(BaseConnector):
         self._add_names_to_ids(ticket)
 
         # Set the summary
-        action_result.set_summary({ZENDESK_JSON_GOT_TICKET_ID: ticket['id']})
+        action_result.set_summary({consts.ZENDESK_JSON_GOT_TICKET_ID: ticket['id']})
 
         # Add the data
         action_result.add_data(ticket)
@@ -480,7 +462,7 @@ class ZendeskConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Progress
-        self.save_progress(ZENDESK_USING_BASE_URL, base_url=self._base_url)
+        self.save_progress(consts.ZENDESK_USING_BASE_URL, base_url=self._base_url)
 
         # Connectivity
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
@@ -489,24 +471,24 @@ class ZendeskConnector(BaseConnector):
         endpoint = '/tickets.json'
 
         params = {
-                'per_page': param.get(ZENDESK_JSON_PER_PAGE, 100),
-                'page': param.get(ZENDESK_JSON_PAGE, 1)
+                'per_page': param.get(consts.ZENDESK_JSON_PER_PAGE, consts.DEFAULT_MAX_RESULTS),
+                'page': param.get(consts.ZENDESK_JSON_PAGE, 1)
         }
 
         # Make the rest call
         ret_val, response = self._make_rest_call(endpoint, action_result, params=params)
 
         # Process errors
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             self.debug_print(action_result.get_message())
             self.set_status(phantom.APP_ERROR, action_result.get_message())
             return phantom.APP_ERROR
 
-        # Process successfull response
+        # Process successfully response
         tickets = response['tickets']
 
         # Set the summary
-        action_result.set_summary({ZENDESK_JSON_TOTAL_TICKETS: len(tickets)})
+        action_result.set_summary({consts.ZENDESK_JSON_TOTAL_TICKETS: len(tickets)})
 
         # Add each ticket as a data
         for ticket in tickets:
@@ -526,7 +508,7 @@ class ZendeskConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         # Progress
-        self.save_progress(ZENDESK_USING_BASE_URL, base_url=self._base_url)
+        self.save_progress(consts.ZENDESK_USING_BASE_URL, base_url=self._base_url)
 
         # Connectivity
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
@@ -537,28 +519,28 @@ class ZendeskConnector(BaseConnector):
         query_type = 'ticket'
 
         # Parameters, I don't think these need to be url encoded
-        request_params = {'query': 'type:{0} {1}'.format(query_type, param[ZENDESK_JSON_QUERY])}
+        request_params = {'query': 'type:{0} {1}'.format(query_type, param[consts.ZENDESK_JSON_QUERY])}
 
         request_params.update({
-                'per_page': param.get(ZENDESK_JSON_PER_PAGE, 100),
-                'page': param.get(ZENDESK_JSON_PAGE, 1)
+                'per_page': param.get(consts.ZENDESK_JSON_PER_PAGE, consts.DEFAULT_MAX_RESULTS),
+                'page': param.get(consts.ZENDESK_JSON_PAGE, 1)
         })
 
         # Make the rest call
         ret_val, response = self._make_rest_call(endpoint, action_result, params=request_params)
 
         # Process errors
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             self.debug_print(action_result.get_message())
             self.set_status(phantom.APP_ERROR, action_result.get_message())
             return phantom.APP_ERROR
 
-        # Process successfull response
+        # Process successfully response
         tickets = response.get('results', [])
 
         # Set the summary
-        action_result.set_summary({ZENDESK_JSON_TOTAL_TICKETS: response.get('count'),
-            ZENDESK_JSON_RETURNED_TICKETS: len(tickets)})
+        action_result.set_summary({consts.ZENDESK_JSON_TOTAL_TICKETS: response.get('count'),
+                                   consts.ZENDESK_JSON_RETURNED_TICKETS: len(tickets)})
 
         for ticket in tickets:
 
@@ -575,58 +557,91 @@ class ZendeskConnector(BaseConnector):
         # Get the action that we are supposed to carry out, set it in the connection result object
         action = self.get_action_identifier()
 
-        # Intialize it to success
+        # Initialize it to success
         ret_val = phantom.APP_SUCCESS
 
-        # Bunch if if..elif to process actions
-        if (action == self.ACTION_ID_CREATE_TICKET):
+        # Bunch if..elif to process actions
+        if action == self.ACTION_ID_CREATE_TICKET:
             ret_val = self._create_ticket(param)
-        elif (action == self.ACTION_ID_LIST_TICKETS):
+        elif action == self.ACTION_ID_LIST_TICKETS:
             ret_val = self._list_tickets(param)
-        elif (action == self.ACTION_ID_GET_TICKET):
+        elif action == self.ACTION_ID_GET_TICKET:
             ret_val = self._get_ticket(param)
-        elif (action == self.ACTION_ID_UPDATE_TICKET):
+        elif action == self.ACTION_ID_UPDATE_TICKET:
             ret_val = self._update_ticket(param)
-        elif (action == self.ACTION_ID_RUN_QUERY):
+        elif action == self.ACTION_ID_RUN_QUERY:
             ret_val = self._run_query(param)
-        elif (action == phantom.ACTION_ID_TEST_ASSET_CONNECTIVITY):
+        elif action == phantom.ACTION_ID_TEST_ASSET_CONNECTIVITY:
             ret_val = self._test_connectivity(param)
 
         return ret_val
 
 
 if __name__ == '__main__':
-    """ Code that is executed when run in standalone debug mode
-    for .e.g:
-    python2.7 ./zendesk_connector.py /tmp/zendesk_test_create_ticket.json
-        """
-
-    # Imports
+    import argparse
     import sys
 
     import pudb
 
-    # Breakpoint at runtime
     pudb.set_trace()
 
-    # The first param is the input json file
-    with open(sys.argv[1]) as f:
+    argparser = argparse.ArgumentParser()
 
-        # Load the input json file
+    argparser.add_argument('input_test_json', help='Input Test JSON file')
+    argparser.add_argument('-u', '--username', help='username', required=False)
+    argparser.add_argument('-p', '--password', help='password', required=False)
+    argparser.add_argument('-v', '--verify', action='store_true', help='verify', required=False, default=False)
+
+    args = argparser.parse_args()
+    session_id = None
+
+    username = args.username
+    password = args.password
+    verify = args.verify
+
+    if username is not None and password is None:
+
+        # User specified a username but not a password, so ask
+        import getpass
+        password = getpass.getpass("Password: ")
+
+    if username and password:
+        try:
+            print("Accessing the Login page")
+            r = requests.get(    # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
+                BaseConnector._get_phantom_base_url() + "login", verify=verify)
+            csrftoken = r.cookies['csrftoken']
+
+            data = dict()
+            data['username'] = username
+            data['password'] = password
+            data['csrfmiddlewaretoken'] = csrftoken
+
+            headers = dict()
+            headers['Cookie'] = 'csrftoken=' + csrftoken
+            headers['Referer'] = BaseConnector._get_phantom_base_url() + 'login'
+
+            print("Logging into Platform to get the session id")
+            r2 = requests.post(    # nosemgrep: python.requests.best-practice.use-timeout.use-timeout
+                BaseConnector._get_phantom_base_url() + "login", verify=verify, data=data, headers=headers)
+            session_id = r2.cookies['sessionid']
+        except Exception as e:
+            print("Unable to get session id from the platfrom. Error: " + str(e))
+            sys.exit(1)
+
+    with open(args.input_test_json) as f:
         in_json = f.read()
         in_json = json.loads(in_json)
-        print(json.dumps(in_json, indent=' ' * 4))
+        print(json.dumps(in_json, indent=4))
 
-        # Create the connector class object
         connector = ZendeskConnector()
-
-        # Se the member vars
         connector.print_progress_message = True
 
-        # Call BaseConnector::_handle_action(...) to kickoff action handling.
-        ret_val = connector._handle_action(json.dumps(in_json), None)
+        if session_id is not None:
+            in_json['user_session_token'] = session_id
+            connector._set_csrf_info(csrftoken, headers['Referer'])
 
-        # Dump the return value
-        print(ret_val)
+        ret_val = connector._handle_action(json.dumps(in_json), None)
+        print(json.dumps(json.loads(ret_val), indent=4))
 
     sys.exit(0)

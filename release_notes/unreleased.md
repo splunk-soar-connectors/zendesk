@@ -1,2 +1,2 @@
 **Unreleased**
-* Updated documentation regarding use of special character in JSON for 'create ticket' and 'update ticket' actions [PAPP-29846]
+* Updated documentation regarding use of special characters in 'fields' parameter for 'create ticket' and 'update ticket' actions [PAPP-29846]

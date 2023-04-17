@@ -19,7 +19,7 @@
     "python_version": "3",
     "logo": "logo_zendesk.svg",
     "logo_dark": "logo_zendesk_dark.svg",
-    "license": "Copyright (c) 2016-2022 Splunk Inc.",
+    "license": "Copyright (c) 2016-2023 Splunk Inc.",
     "configuration": {
         "url": {
             "data_type": "string",
@@ -171,6 +171,20 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "test field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.description",
                     "data_type": "string",
                     "column_order": 6,
@@ -188,8 +202,30 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "test field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.forum_topic_id",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.from_messaging_channel",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.group_id",
@@ -344,7 +380,7 @@
                         "domain"
                     ],
                     "example_values": [
-                        "https://phantom.zendesk.com/api/v2/tickets/1188.json"
+                        "https://soar.zendesk.com/api/v2/tickets/1188.json"
                     ]
                 },
                 {
@@ -355,8 +391,36 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.via.source.from.address",
+                    "data_type": "string",
+                    "example_values": [
+                        "testuser@gmail.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.via.source.from.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Maddie"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.via.source.rel",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.via.source.to.address",
+                    "data_type": "string",
+                    "example_values": [
+                        "support@soar.zendesk.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.via.source.to.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "SOAR Cyber"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.returned_tickets",
@@ -392,26 +456,6 @@
                     "example_values": [
                         1
                     ]
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.value",
-                    "data_type": "string",
-                    "example_value": "test field value"
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.value",
-                    "data_type": "string",
-                    "example_value": "test field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -514,6 +558,20 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "custom field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.description",
                     "data_type": "string",
                     "column_order": 6,
@@ -531,8 +589,30 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "test field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.forum_topic_id",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.from_messaging_channel",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.group_id",
@@ -680,7 +760,7 @@
                         "domain"
                     ],
                     "example_values": [
-                        "https://phantom.zendesk.com/api/v2/tickets/7.json"
+                        "https://soar.zendesk.com/api/v2/tickets/7.json"
                     ]
                 },
                 {
@@ -721,26 +801,6 @@
                     "example_values": [
                         1
                     ]
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.value",
-                    "data_type": "string",
-                    "example_value": "test field value"
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.value",
-                    "data_type": "string",
-                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -850,6 +910,20 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "custom field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.description",
                     "data_type": "string",
                     "column_order": 6,
@@ -867,8 +941,30 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "test field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.forum_topic_id",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.from_messaging_channel",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.group_id",
@@ -1019,7 +1115,7 @@
                         "domain"
                     ],
                     "example_values": [
-                        "https://phantom.zendesk.com/api/v2/tickets/1189.json"
+                        "https://soar.zendesk.com/api/v2/tickets/1189.json"
                     ]
                 },
                 {
@@ -1060,26 +1156,6 @@
                     "example_values": [
                         1
                     ]
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.value",
-                    "data_type": "string",
-                    "example_value": "test field value"
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.value",
-                    "data_type": "string",
-                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -1176,6 +1252,20 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "custom field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.description",
                     "data_type": "string",
                     "column_order": 6,
@@ -1193,8 +1283,30 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "test field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.forum_topic_id",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.from_messaging_channel",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.group_id",
@@ -1342,7 +1454,7 @@
                         "domain"
                     ],
                     "example_values": [
-                        "https://phantom.zendesk.com/api/v2/tickets/12.json"
+                        "https://soar.zendesk.com/api/v2/tickets/12.json"
                     ]
                 },
                 {
@@ -1387,26 +1499,6 @@
                     "example_values": [
                         1
                     ]
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.value",
-                    "data_type": "string",
-                    "example_value": "test field value"
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.value",
-                    "data_type": "string",
-                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
@@ -1517,6 +1609,20 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.custom_fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.custom_fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "custom field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.description",
                     "data_type": "string",
                     "column_order": 6,
@@ -1534,8 +1640,30 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.data.*.fields.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        360011869194
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.fields.*.value",
+                    "data_type": "string",
+                    "example_values": [
+                        "test field value"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.forum_topic_id",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.from_messaging_channel",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.group_id",
@@ -1683,7 +1811,7 @@
                         "domain"
                     ],
                     "example_values": [
-                        "https://phantom.zendesk.com/api/v2/tickets/9.json"
+                        "https://soar.zendesk.com/api/v2/tickets/9.json"
                     ]
                 },
                 {
@@ -1728,26 +1856,6 @@
                     "example_values": [
                         1
                     ]
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.fields.*.value",
-                    "data_type": "string",
-                    "example_value": "test field value"
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.id",
-                    "data_type": "numeric",
-                    "example_value": 360011869194
-                },
-                {
-                    "data_path": "action_result.data.*.custom_fields.*.value",
-                    "data_type": "string",
-                    "example_value": "custom field value"
                 }
             ],
             "versions": "EQ(*)"
