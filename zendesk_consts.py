@@ -13,8 +13,6 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 ZENDESK_JSON_DEVICE_URL = "url"
-ZENDESK_JSON_USERNAME = "username"
-ZENDESK_JSON_PASSWORD = "password"  # pragma: allowlist secret
 ZENDESK_JSON_MAX_RESULTS = "max_results"
 ZENDESK_JSON_TOTAL_TICKETS = "total_tickets"
 ZENDESK_JSON_SHORT_DESCRIPTION = "short_description"

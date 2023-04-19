@@ -66,13 +66,13 @@ class ZendeskConnector(BaseConnector):
         # Initialized here and used on every REST endpoint calls
         self._api_uri = '/api/v2'
 
-        password = config.get(consts.ZENDESK_JSON_PASSWORD)
+        password = config.get(phantom.APP_JSON_PASSWORD)
         api_token = config.get(consts.ZENDESK_JSON_API_TOKEN)
 
         if not (password or api_token):
             return self.set_status(phantom.APP_ERROR, "Please specify one of either 'Password' or 'API Token'")
 
-        self._username = config[consts.ZENDESK_JSON_USERNAME]
+        self._username = config[phantom.APP_JSON_USERNAME]
 
         self._auth_method = "password"
 
