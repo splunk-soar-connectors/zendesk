@@ -484,7 +484,7 @@ class ZendeskConnector(BaseConnector):
             self.set_status(phantom.APP_ERROR, action_result.get_message())
             return phantom.APP_ERROR
 
-        # Process successfull response
+        # Process successful response
         tickets = response['tickets']
 
         # Set the summary
