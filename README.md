@@ -2,7 +2,7 @@
 # Zendesk
 
 Publisher: Splunk  
-Connector Version: 2.0.5  
+Connector Version: 2.0.6  
 Product Vendor: Zendesk  
 Product Name: Zendesk  
 Product Version Supported (regex): ".\*"  
