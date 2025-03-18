@@ -1,6 +1,6 @@
 # File: zendesk_consts.py
 #
-# Copyright (c) 2016-2024 Splunk Inc.
+# Copyright (c) 2016-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ ZENDESK_ERR_FIELDS_JSON_PARSE = "Unable to parse the fields parameter into a dic
 ZENDESK_ERR_API_UNSUPPORTED_METHOD = "Unsupported method"
 ZENDESK_ERR_EMPTY_FIELDS = "The fields dictionary was detected to be empty"
 ZENDESK_EMPTY_RESPONSE_STATUS_CODES = [201, 204]
-ZENDESK_REQUEST_METHODS = ['put', 'post']
+ZENDESK_REQUEST_METHODS = ["put", "post"]
 ZENDESK_CREATED_TICKET = "Created ticket"
 ZENDESK_USING_BASE_URL = "Using url: {base_url}"
 ZENDESK_ERR_JSON_PARSE = "Unable to parse reply as a Json, raw string reply: '{raw_text}'"
