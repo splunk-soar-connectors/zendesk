@@ -16,7 +16,7 @@
     "latest_tested_versions": [
         "ZenDesk Support Cloud v10272"
     ],
-    "python_version": "3",
+    "python_version": ["3.9", "3.13"],
     "logo": "logo_zendesk.svg",
     "logo_dark": "logo_zendesk_dark.svg",
     "license": "Copyright (c) 2016-2025 Splunk Inc.",
