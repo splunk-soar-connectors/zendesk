@@ -5,8 +5,8 @@
     "publisher": "Splunk",
     "type": "ticketing",
     "main_module": "zendesk_connector.py",
-    "app_version": "2.0.7",
-    "utctime_updated": "2025-04-11T17:42:17.562447Z",
+    "app_version": "2.0.8",
+    "utctime_updated": "2025-07-30T17:57:25.410086Z",
     "package_name": "phantom_zendesk",
     "product_vendor": "Zendesk",
     "product_name": "Zendesk",
@@ -16,7 +16,10 @@
     "latest_tested_versions": [
         "ZenDesk Support Cloud v10272"
     ],
-    "python_version": ["3.9", "3.13"],
+    "python_version": [
+        "3.9",
+        "3.13"
+    ],
     "logo": "logo_zendesk.svg",
     "logo_dark": "logo_zendesk_dark.svg",
     "license": "Copyright (c) 2016-2025 Splunk Inc.",
