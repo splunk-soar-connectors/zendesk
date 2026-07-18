@@ -1,9 +1,9 @@
 # Zendesk
 
-Publisher: Splunk \
-Connector Version: 2.0.9 \
-Product Vendor: Zendesk \
-Product Name: Zendesk \
+Publisher: Splunk <br>
+Connector Version: 2.0.9 <br>
+Product Vendor: Zendesk <br>
+Product Name: Zendesk <br>
 Minimum Product Version: 5.5.0
 
 This App allows for ticket management on Zendesk
@@ -21,18 +21,18 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity. This action runs a quick query on the device to check the connection and credentials \
-[run query](#action-run-query) - Search tickets \
-[list tickets](#action-list-tickets) - Get a list of Tickets \
-[create ticket](#action-create-ticket) - Create a Ticket \
-[get ticket](#action-get-ticket) - Get ticket information \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity. This action runs a quick query on the device to check the connection and credentials <br>
+[run query](#action-run-query) - Search tickets <br>
+[list tickets](#action-list-tickets) - Get a list of Tickets <br>
+[create ticket](#action-create-ticket) - Create a Ticket <br>
+[get ticket](#action-get-ticket) - Get ticket information <br>
 [update ticket](#action-update-ticket) - Update ticket information
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity. This action runs a quick query on the device to check the connection and credentials
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -47,7 +47,7 @@ No Output
 
 Search tickets
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 A <b>ticket</b> type query is executed on Zendesk.
@@ -123,7 +123,7 @@ action_result.parameter.ph | ph | | |
 
 Get a list of Tickets
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -188,7 +188,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Create a Ticket
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 If you want to assign the value to custom fields, use the following format in 'fields' parameter<br>{"custom_fields": [{"Test Field": "test field value"}, {"custom test field": "custom test field value"}]}<br>If you want to add <b>double quote(")</b> or <b>backslash(\\)</b> in custom fields, use the <b>escape(\\)</b> character followed by double quote or backslash, check the following examples,<br><ul><li>To add double quote or backslash in custom field values: {"custom_fields": [{"Test Field": "test \\"field\\" value"}, {"custom test field": "custom \\\\test\\\\ field value"}]}</li><li>To add double quote or backslash in custom field keys: {"custom_fields": [{"Test \\"Name\\" Field": "test field value"}, {"custom \\\\test\\\\ field": "custom test field value"}]}</li></ul>
@@ -257,7 +257,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get ticket information
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -321,7 +321,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Update ticket information
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Update an already existing ticket with the values that are specified in the 'fields' parameter. The user has to know the key names to set in this parameter. Please refer to the Zendesk Core API, Tickets section to learn about the fields that can be used to update or create tickets.<br>The JSON that is specified in the 'fields' parameter should have the keys and values specified in double quotes string format, except in case of boolean values, which should be either <i>true</i> or <i>false</i>.<br>Some examples: <ul><li>To close a ticket: {"subject": "Zeus, multiple action need to be taken", "status": "solved"}</li><li>To add a comment: {"status": "open", "comment": { "body": "The smoke is very colorful.", "author_id": 1 }}</li><li>To update custom fields value: {"custom_fields": [{"Test Field": "test field value"}, {"custom test field": "custom test field value"}]}</li></ul>If you want to add <b>double quote(")</b> or <b>backslash(\\)</b> in custom fields, use the <b>escape(\\)</b> character followed by double quote or backslash, check the following examples,<br><ul><li>To add double quote or backslash in custom field values: {"custom_fields": [{"Test Field": "test \\"field\\" value"}, {"custom test field": "custom \\\\test\\\\ field value"}]}</li><li>To add double quote or backslash in custom field keys: {"custom_fields": [{"Test \\"Name\\" Field": "test field value"}, {"custom \\\\test\\\\ field": "custom test field value"}]}</li></ul>
@@ -389,7 +389,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

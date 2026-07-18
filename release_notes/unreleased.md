@@ -1,1 +1,3 @@
 **Unreleased**
+
+* - Prevents ticket creation and updates from silently omitting unresolved Zendesk custom fields.
