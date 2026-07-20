@@ -1,6 +1,6 @@
 # File: zendesk_connector.py
 #
-# Copyright (c) 2016-2025 Splunk Inc.
+# Copyright (c) 2016-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,9 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 """Code that implements calls made to the zendesk systems device"""
+
+# Python imports
+from urllib.parse import parse_qsl, urlparse
 
 # Phantom imports
 import phantom.app as phantom
@@ -174,7 +177,7 @@ class ZendeskConnector(BaseConnector):
         self.save_progress(consts.ZENDESK_MSG_GET_INCIDENT_TEST)
 
         # Make the rest endpoint call
-        ret_val, response = self._make_rest_call(endpoint, action_result, params=params)
+        ret_val, _response = self._make_rest_call(endpoint, action_result, params=params)
 
         # Process errors
         if phantom.is_fail(ret_val):
@@ -319,13 +322,40 @@ class ZendeskConnector(BaseConnector):
         """This function is used to handle the custom fields in fields parameter."""
 
         endpoint = "/ticket_fields.json"
+        params = {"per_page": 100}
+        ticket_fields = []
+        seen_pages = set()
+        base_url = urlparse(self._base_url)
 
-        ret_val, response = self._make_rest_call(endpoint, action_result=action_result)
+        while endpoint:
+            page = (endpoint, tuple(sorted(params.items())))
+            if page in seen_pages:
+                return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_TICKET_FIELDS_PAGINATION), None
+            seen_pages.add(page)
 
-        if phantom.is_fail(ret_val):
-            return action_result.get_status(), None
+            ret_val, response = self._make_rest_call(endpoint, action_result=action_result, params=params)
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status(), None
+
+            ticket_fields.extend(response.get("ticket_fields", []))
+            next_page = response.get("next_page")
+            if not next_page:
+                break
+
+            next_page_url = urlparse(next_page)
+            if (
+                next_page_url.scheme != base_url.scheme
+                or next_page_url.netloc != base_url.netloc
+                or not next_page_url.path.startswith(f"{self._api_uri}/")
+            ):
+                return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_TICKET_FIELDS_PAGINATION), None
+
+            endpoint = next_page_url.path[len(self._api_uri) :]
+            params = dict(parse_qsl(next_page_url.query, keep_blank_values=True))
 
         response_list = []
+        unmatched_fields = []
         for custom_field_item in custom_fields:
             keys_list = list(custom_field_item.keys())
             values_list = list(custom_field_item.values())
@@ -335,10 +365,18 @@ class ZendeskConnector(BaseConnector):
 
             key = keys_list[0]
             value = values_list[0]
-            for item in response.get("ticket_fields", []):
+            for item in ticket_fields:
                 if item["raw_title"] == key:
                     response_list.append({"id": item["id"], "value": value})
                     break
+            else:
+                unmatched_fields.append(key)
+
+        if unmatched_fields:
+            return (
+                action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_CUSTOM_FIELDS_NOT_FOUND, fields=", ".join(unmatched_fields)),
+                None,
+            )
 
         return phantom.APP_SUCCESS, response_list
 
