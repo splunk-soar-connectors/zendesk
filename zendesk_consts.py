@@ -41,6 +41,7 @@ ZENDESK_MSG_GET_INCIDENT_TEST = "Querying a recent tickets to check credentials"
 ZENDESK_ERR_FIELDS_JSON_PARSE = "Unable to parse the fields parameter into a dictionary"
 ZENDESK_ERR_API_UNSUPPORTED_METHOD = "Unsupported method"
 ZENDESK_ERR_EMPTY_FIELDS = "The fields dictionary was detected to be empty"
+ZENDESK_ERR_INVALID_TICKET_ID = "Please provide a positive numeric ticket ID"
 ZENDESK_ERR_TICKET_FIELDS_PAGINATION = "Unable to safely retrieve the complete ticket field catalog"
 ZENDESK_ERR_CUSTOM_FIELDS_NOT_FOUND = "Unable to resolve ticket custom field title(s): {fields}"
 ZENDESK_EMPTY_RESPONSE_STATUS_CODES = [201, 204]

@@ -1,1 +1,3 @@
 **Unreleased**
+
+* Validates ticket IDs before building Zendesk ticket API paths.
