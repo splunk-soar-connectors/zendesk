@@ -213,6 +213,16 @@ class ZendeskConnector(BaseConnector):
 
         return phantom.APP_SUCCESS, fields
 
+    def _get_ticket_endpoint(self, param, action_result):
+        """Validates a ticket ID before using it in a Zendesk API path."""
+
+        ticket_id = str(param.get(consts.ZENDESK_JSON_TICKET_ID, ""))
+
+        if not ticket_id.isascii() or not ticket_id.isdecimal() or int(ticket_id) < 1:
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_INVALID_TICKET_ID), None
+
+        return phantom.APP_SUCCESS, f"/tickets/{ticket_id}.json"
+
     def _add_names_to_ids(self, ticket):
         """Function parses the ticket and adds names to all the ids present in it"""
 
@@ -395,8 +405,10 @@ class ZendeskConnector(BaseConnector):
         # Connectivity
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
 
-        # set the endpoint
-        endpoint = f"/tickets/{param[consts.ZENDESK_JSON_TICKET_ID]}.json"
+        ret_val, endpoint = self._get_ticket_endpoint(param, action_result)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         # Parse and set the fields parameter, it is required for this action
         ret_val, fields = self._get_fields(param, action_result)
@@ -458,8 +470,10 @@ class ZendeskConnector(BaseConnector):
         # Connectivity
         self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
 
-        # set the endpoint
-        endpoint = f"/tickets/{param[consts.ZENDESK_JSON_TICKET_ID]}.json"
+        ret_val, endpoint = self._get_ticket_endpoint(param, action_result)
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         # Make the rest call
         ret_val, response = self._make_rest_call(endpoint, action_result)
