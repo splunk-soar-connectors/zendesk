@@ -1,7 +1,7 @@
 # Zendesk
 
 Publisher: Splunk <br>
-Connector Version: 2.0.10 <br>
+Connector Version: 2.0.11 <br>
 Product Vendor: Zendesk <br>
 Product Name: Zendesk <br>
 Minimum Product Version: 5.5.0
