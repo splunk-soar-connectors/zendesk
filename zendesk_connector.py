@@ -15,6 +15,7 @@
 """Code that implements calls made to the zendesk systems device"""
 
 # Python imports
+import hashlib
 from urllib.parse import parse_qsl, urlparse
 
 # Phantom imports
@@ -45,6 +46,7 @@ class ZendeskConnector(BaseConnector):
         self._key = None
         self._username = None
         self._auth_method = None
+        self._state = {}
 
         # Call the BaseConnectors init first
         super().__init__()
@@ -53,6 +55,9 @@ class ZendeskConnector(BaseConnector):
         """Called once for every action, all member initializations occur here"""
 
         config = self.get_config()
+        self._state = self.load_state()
+        if not isinstance(self._state, dict):
+            self._state = {}
 
         # Get the Base URL from the asset config and so some cleanup
         self._base_url = config[consts.ZENDESK_JSON_DEVICE_URL].rstrip("/")
@@ -84,6 +89,24 @@ class ZendeskConnector(BaseConnector):
             self._username += "/token"
             self._auth_method = "api token"
 
+        credential_fingerprint = hashlib.sha256(str(self._key).encode("utf-8")).hexdigest()
+        credential_binding = self._state.get(consts.ZENDESK_STATE_CREDENTIAL_BINDING)
+        if (
+            isinstance(credential_binding, dict)
+            and credential_binding.get("credential_fingerprint") == credential_fingerprint
+            and credential_binding.get("base_url") != self._base_url
+        ):
+            return self.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_CREDENTIAL_ENDPOINT_CHANGED)
+
+        self._state[consts.ZENDESK_STATE_CREDENTIAL_BINDING] = {
+            "base_url": self._base_url,
+            "credential_fingerprint": credential_fingerprint,
+        }
+
+        return phantom.APP_SUCCESS
+
+    def finalize(self):
+        self.save_state(self._state)
         return phantom.APP_SUCCESS
 
     def _make_rest_call(self, endpoint, action_result, headers=None, params=None, data=None, method="get"):
