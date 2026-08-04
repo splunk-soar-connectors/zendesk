@@ -142,6 +142,7 @@ class ZendeskConnector(BaseConnector):
                 headers=headers,  # The headers to send in the HTTP call
                 verify=True,  # cert verification should be true
                 params=params,
+                timeout=consts.ZENDESK_DEFAULT_REQUEST_TIMEOUT,
             )  # uri parameters if any
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_SERVER_CONNECTION, e), resp_json
