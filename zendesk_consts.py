@@ -44,6 +44,7 @@ ZENDESK_ERR_EMPTY_FIELDS = "The fields dictionary was detected to be empty"
 ZENDESK_ERR_INVALID_TICKET_ID = "Please provide a positive numeric ticket ID"
 ZENDESK_ERR_TICKET_FIELDS_PAGINATION = "Unable to safely retrieve the complete ticket field catalog"
 ZENDESK_ERR_CUSTOM_FIELDS_NOT_FOUND = "Unable to resolve ticket custom field title(s): {fields}"
+ZENDESK_ERR_UNEXPECTED_TICKET_DATA = "Response from server did not contain the expected ticket data"
 ZENDESK_EMPTY_RESPONSE_STATUS_CODES = [201, 204]
 ZENDESK_REQUEST_METHODS = ["put", "post"]
 ZENDESK_CREATED_TICKET = "Created ticket"

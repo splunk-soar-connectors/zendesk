@@ -226,10 +226,15 @@ class ZendeskConnector(BaseConnector):
     def _add_names_to_ids(self, ticket):
         """Function parses the ticket and adds names to all the ids present in it"""
 
+        if not isinstance(ticket, dict):
+            return
+
         user_id_keys = ["submitter_id", "assignee_id", "requester_id"]
 
         for user_id_key in user_id_keys:
-            user_id = ticket[user_id_key]
+            user_id = ticket.get(user_id_key)
+            if not user_id:
+                continue
 
             key_name = f"{user_id_key}_name"
 
@@ -315,7 +320,9 @@ class ZendeskConnector(BaseConnector):
             return phantom.APP_ERROR
 
         # parse the response from the REST call, this is very specific to the device being managed
-        created_ticket = response["ticket"]
+        created_ticket = response.get("ticket") if isinstance(response, dict) else None
+        if not isinstance(created_ticket, dict):
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_UNEXPECTED_TICKET_DATA)
 
         # Set the summary in the action_result
         action_result.set_summary({consts.ZENDESK_JSON_NEW_TICKET_ID: created_ticket["id"]})
@@ -442,7 +449,9 @@ class ZendeskConnector(BaseConnector):
             return action_result.get_status()
 
         # Get the result
-        ticket = response.get("ticket")
+        ticket = response.get("ticket") if isinstance(response, dict) else None
+        if not isinstance(ticket, dict):
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_UNEXPECTED_TICKET_DATA)
 
         self._add_names_to_ids(ticket)
 
@@ -484,12 +493,11 @@ class ZendeskConnector(BaseConnector):
             self.set_status(phantom.APP_ERROR, action_result.get_message())
             return phantom.APP_ERROR
 
-        if not response.get("ticket"):
-            return action_result.set_status(phantom.APP_ERROR, status_message="No data found")
+        ticket = response.get("ticket") if isinstance(response, dict) else None
+        if not isinstance(ticket, dict):
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_UNEXPECTED_TICKET_DATA)
 
         # Process the return result
-        ticket = response["ticket"]
-
         self._add_names_to_ids(ticket)
 
         # Set the summary
@@ -534,7 +542,9 @@ class ZendeskConnector(BaseConnector):
             return phantom.APP_ERROR
 
         # Process successful response
-        tickets = response["tickets"]
+        tickets = response.get("tickets") if isinstance(response, dict) else None
+        if not isinstance(tickets, list):
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_UNEXPECTED_TICKET_DATA)
 
         # Set the summary
         action_result.set_summary({consts.ZENDESK_JSON_TOTAL_TICKETS: len(tickets)})
@@ -584,7 +594,9 @@ class ZendeskConnector(BaseConnector):
             return phantom.APP_ERROR
 
         # Process successfully response
-        tickets = response.get("results", [])
+        tickets = response.get("results") if isinstance(response, dict) else None
+        if not isinstance(tickets, list):
+            return action_result.set_status(phantom.APP_ERROR, consts.ZENDESK_ERR_UNEXPECTED_TICKET_DATA)
 
         # Set the summary
         action_result.set_summary({consts.ZENDESK_JSON_TOTAL_TICKETS: response.get("count"), consts.ZENDESK_JSON_RETURNED_TICKETS: len(tickets)})
