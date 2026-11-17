@@ -28,19 +28,19 @@ from ..helper import enrich_ticket_user_names, request as zendesk_request, ticke
 
 class RunQueryParams(Params):
     query: str = Param(description="Query to search tickets")
-    max_results_per_page: float | None = Param(
+    max_results_per_page: int | None = Param(
         description="Max number of tickets to return per page", default=100
     )
-    page_number: float | None = Param(description="The page number to get", default=1)
+    page_number: int | None = Param(description="The page number to get", default=1)
 
 
 class CustomFieldsOutput(PermissiveActionOutput):
-    id: float = OutputField(example_values=[360011869194])
+    id: int = OutputField(example_values=[360011869194])
     value: str = OutputField(example_values=["test field value"])
 
 
 class FieldsOutput(PermissiveActionOutput):
-    id: float = OutputField(example_values=[360011869194])
+    id: int = OutputField(example_values=[360011869194])
     value: str = OutputField(example_values=["test field value"])
 
 
@@ -66,7 +66,7 @@ class ViaOutput(ActionOutput):
 
 
 class RunQueryOutput(PermissiveActionOutput):
-    id: float = OutputField(
+    id: int = OutputField(
         column_name="ID", cef_types=["zendesk ticket id"], example_values=[1188]
     )
     url: str = OutputField(
@@ -91,30 +91,30 @@ class RunQueryOutput(PermissiveActionOutput):
 
     allow_attachments: bool
     allow_channelback: bool = OutputField(example_values=[False, True])
-    assignee_id: float = OutputField(example_values=[5980690157])
-    brand_id: float = OutputField(example_values=[1103787])
+    assignee_id: int = OutputField(example_values=[5980690157])
+    brand_id: int = OutputField(example_values=[1103787])
     custom_fields: list[CustomFieldsOutput]
     due_at: str
     external_id: str
     fields: list[FieldsOutput]
     forum_topic_id: str
     from_messaging_channel: bool
-    group_id: float = OutputField(example_values=[28493297])
+    group_id: int = OutputField(example_values=[28493297])
     has_incidents: bool = OutputField(example_values=[False, True])
     is_public: bool
-    organization_id: float
+    organization_id: int
     priority: str
     problem_id: str
     raw_subject: str = OutputField(example_values=["moshah ticket"])
     recipient: str
-    requester_id: float = OutputField(example_values=[369385135314])
+    requester_id: int = OutputField(example_values=[369385135314])
     result_type: str = OutputField(example_values=["ticket"])
     satisfaction_probability: str
     satisfaction_rating: str
-    submitter_id: float = OutputField(example_values=[5980690157])
+    submitter_id: int = OutputField(example_values=[5980690157])
     submitter_id_name: str = OutputField(example_values=["Herman Edwards"])
     tags: str
-    ticket_form_id: float = OutputField(example_values=[181987])
+    ticket_form_id: int = OutputField(example_values=[181987])
     type: str
     updated_at: str = OutputField(example_values=["2018-11-20T12:08:58Z"])
     via: ViaOutput
