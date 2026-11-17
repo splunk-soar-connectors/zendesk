@@ -36,12 +36,12 @@ class CreateTicketParams(Params):
 
 
 class CustomFieldsOutput(PermissiveActionOutput):
-    id: float = OutputField(example_values=[360011869194])
+    id: int = OutputField(example_values=[360011869194])
     value: str = OutputField(example_values=["custom field value"])
 
 
 class FieldsOutput(PermissiveActionOutput):
-    id: float = OutputField(example_values=[360011869194])
+    id: int = OutputField(example_values=[360011869194])
     value: str = OutputField(example_values=["test field value"])
 
 
@@ -55,7 +55,7 @@ class ViaOutput(ActionOutput):
 
 
 class CreateTicketOutput(PermissiveActionOutput):
-    id: float = OutputField(
+    id: int = OutputField(
         column_name="ID", cef_types=["zendesk ticket id"], example_values=[1189]
     )
     url: str = OutputField(
@@ -76,29 +76,29 @@ class CreateTicketOutput(PermissiveActionOutput):
 
     allow_attachments: bool
     allow_channelback: bool = OutputField(example_values=[False, True])
-    assignee_id: float
-    brand_id: float = OutputField(example_values=[1103787])
+    assignee_id: int
+    brand_id: int = OutputField(example_values=[1103787])
     custom_fields: list[CustomFieldsOutput]
     due_at: str
     external_id: str
     fields: list[FieldsOutput]
-    forum_topic_id: str
+    forum_topic_id: int
     from_messaging_channel: bool
-    group_id: float = OutputField(example_values=[28493297])
+    group_id: int = OutputField(example_values=[28493297])
     has_incidents: bool = OutputField(example_values=[False, True])
     is_public: bool
-    organization_id: float = OutputField(example_values=[3853131587])
+    organization_id: int = OutputField(example_values=[3853131587])
     priority: str
-    problem_id: str
+    problem_id: int
     raw_subject: str = OutputField(example_values=["test"])
     recipient: str
-    requester_id: float = OutputField(example_values=[5980690157])
+    requester_id: int = OutputField(example_values=[5980690157])
     satisfaction_probability: str
     satisfaction_rating: str
-    submitter_id: float = OutputField(example_values=[5980690157])
+    submitter_id: int = OutputField(example_values=[5980690157])
     submitter_id_name: str = OutputField(example_values=["Herman Edwards"])
-    tags: str
-    ticket_form_id: float = OutputField(example_values=[181987])
+    tags: list[str]
+    ticket_form_id: int = OutputField(example_values=[181987])
     type: str
     updated_at: str = OutputField(example_values=["2018-11-20T13:41:01Z"])
     via: ViaOutput

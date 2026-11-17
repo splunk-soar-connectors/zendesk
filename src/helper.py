@@ -71,7 +71,7 @@ def ticket_output(output_cls, ticket, result_status="success"):
     output = dict(ticket)
     if "result_status" in output_cls.model_fields:
         output["result_status"] = result_status
-    return output_cls.model_construct(**output)
+    return output_cls(**output)
 
 
 def enrich_ticket_user_names(asset, tickets):
