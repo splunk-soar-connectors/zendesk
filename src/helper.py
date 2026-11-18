@@ -50,6 +50,7 @@ def request(asset, method: str, endpoint: str, *, params=None, data=None):
             headers={"Accept": "application/json", "Content-Type": "application/json"},
             json=data,
             timeout=30,
+            follow_redirects=True,
         )
     except httpx.HTTPError as exc:
         raise ActionFailure(f"Unable to connect to Zendesk: {exc}") from exc

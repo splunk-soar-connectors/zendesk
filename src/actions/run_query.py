@@ -163,6 +163,7 @@ def run_query(
         except Exception as error:
             if not partial_data:
                 raise
+            # Preserve successful rows on a later failure, matching legacy behavior.
             failed_result = ActionResult(
                 status=False,
                 message=str(error),
