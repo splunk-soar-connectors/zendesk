@@ -348,8 +348,8 @@ action_result.data.\*.ticket_form_id | numeric | | 181987 |
 action_result.data.\*.type | string | | |
 action_result.data.\*.updated_at | string | | 2018-11-20T12:08:58Z |
 action_result.data.\*.via.channel | string | | web |
-action_result.data.\*.via.source.from\_.address | string | | testuser@gmail.com |
-action_result.data.\*.via.source.from\_.name | string | | Maddie |
+action_result.data.\*.via.source.from.address | string | | testuser@gmail.com |
+action_result.data.\*.via.source.from.name | string | | Maddie |
 action_result.data.\*.via.source.rel | string | | |
 action_result.data.\*.via.source.to.address | string | | support@soar.zendesk.com |
 action_result.data.\*.via.source.to.name | string | | SOAR Cyber |
