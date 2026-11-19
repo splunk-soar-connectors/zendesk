@@ -55,7 +55,7 @@ class ToOutput(ActionOutput):
 
 
 class SourceOutput(ActionOutput):
-    from_: FromOutput
+    from_: FromOutput = OutputField(alias="from")
     rel: str
     to: ToOutput
 
