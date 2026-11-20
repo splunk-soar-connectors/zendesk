@@ -92,13 +92,10 @@ action_result.data.\*.requester_id_name | string | | Herman Edwards |
 action_result.data.\*.allow_attachments | boolean | | True False |
 action_result.data.\*.allow_channelback | boolean | | True False |
 action_result.data.\*.assignee_id | numeric | | |
-action_result.data.\*.brand_id | numeric | | 1103787 |
 action_result.data.\*.custom_fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.custom_fields.\*.value | string | | custom field value |
 action_result.data.\*.due_at | string | | |
 action_result.data.\*.external_id | string | | |
 action_result.data.\*.fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.fields.\*.value | string | | test field value |
 action_result.data.\*.forum_topic_id | numeric | | |
 action_result.data.\*.from_messaging_channel | boolean | | True False |
 action_result.data.\*.group_id | numeric | | 28493297 |
@@ -108,10 +105,8 @@ action_result.data.\*.organization_id | numeric | | 3853131587 |
 action_result.data.\*.priority | string | | |
 action_result.data.\*.problem_id | numeric | | |
 action_result.data.\*.raw_subject | string | | test |
-action_result.data.\*.recipient | string | | |
 action_result.data.\*.requester_id | numeric | | 5980690157 |
-action_result.data.\*.satisfaction_probability | string | | |
-action_result.data.\*.satisfaction_rating | string | | |
+action_result.data.\*.satisfaction_probability | numeric | | |
 action_result.data.\*.submitter_id | numeric | | 5980690157 |
 action_result.data.\*.submitter_id_name | string | | Herman Edwards |
 action_result.data.\*.tags.\* | string | | |
@@ -129,7 +124,7 @@ summary.total_objects_successful | numeric | | 1 |
 Get ticket information
 
 Type: **generic** <br>
-Read only: **False**
+Read only: **True**
 
 #### Action Parameters
 
@@ -155,13 +150,10 @@ action_result.data.\*.requester_id_name | string | | Herman Edwards |
 action_result.data.\*.allow_attachments | boolean | | True False |
 action_result.data.\*.allow_channelback | boolean | | True False |
 action_result.data.\*.assignee_id | numeric | | 5980690157 |
-action_result.data.\*.brand_id | numeric | | 1103787 |
 action_result.data.\*.custom_fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.custom_fields.\*.value | string | | custom field value |
 action_result.data.\*.due_at | string | | |
 action_result.data.\*.external_id | string | | |
 action_result.data.\*.fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.fields.\*.value | string | | test field value |
 action_result.data.\*.forum_topic_id | numeric | | |
 action_result.data.\*.from_messaging_channel | boolean | | True False |
 action_result.data.\*.group_id | numeric | | 28493297 |
@@ -171,10 +163,8 @@ action_result.data.\*.organization_id | numeric | | 3853131587 |
 action_result.data.\*.priority | string | | |
 action_result.data.\*.problem_id | numeric | | |
 action_result.data.\*.raw_subject | string | | Zeus detections |
-action_result.data.\*.recipient | string | | |
 action_result.data.\*.requester_id | numeric | | 5980690157 |
-action_result.data.\*.satisfaction_probability | string | | |
-action_result.data.\*.satisfaction_rating | string | | |
+action_result.data.\*.satisfaction_probability | numeric | | |
 action_result.data.\*.submitter_id | numeric | | 5980690157 |
 action_result.data.\*.submitter_id_name | string | | Herman Edwards |
 action_result.data.\*.tags.\* | string | | |
@@ -193,7 +183,7 @@ summary.total_objects_successful | numeric | | 1 |
 Get a list of Tickets
 
 Type: **generic** <br>
-Read only: **False**
+Read only: **True**
 
 #### Action Parameters
 
@@ -221,13 +211,10 @@ action_result.data.\*.requester_id_name | string | | Herman Edwards |
 action_result.data.\*.allow_attachments | boolean | | True False |
 action_result.data.\*.allow_channelback | boolean | | True False |
 action_result.data.\*.assignee_id | numeric | | 5980690157 |
-action_result.data.\*.brand_id | numeric | | 1103787 |
 action_result.data.\*.custom_fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.custom_fields.\*.value | string | | custom field value |
 action_result.data.\*.due_at | string | | |
 action_result.data.\*.external_id | string | | |
 action_result.data.\*.fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.fields.\*.value | string | | test field value |
 action_result.data.\*.forum_topic_id | numeric | | |
 action_result.data.\*.from_messaging_channel | boolean | | True False |
 action_result.data.\*.group_id | numeric | | 28493297 |
@@ -237,10 +224,8 @@ action_result.data.\*.organization_id | numeric | | 3853131587 |
 action_result.data.\*.priority | string | | |
 action_result.data.\*.problem_id | numeric | | |
 action_result.data.\*.raw_subject | string | | <b>bold?</b>not bold? |
-action_result.data.\*.recipient | string | | |
 action_result.data.\*.requester_id | numeric | | 5980690157 |
-action_result.data.\*.satisfaction_probability | string | | |
-action_result.data.\*.satisfaction_rating | string | | |
+action_result.data.\*.satisfaction_probability | numeric | | |
 action_result.data.\*.submitter_id | numeric | | 5980690157 |
 action_result.data.\*.submitter_id_name | string | | Herman Edwards |
 action_result.data.\*.tags.\* | string | | |
@@ -288,7 +273,7 @@ summary.total_objects_successful | numeric | | 1 |
 Search tickets
 
 Type: **investigate** <br>
-Read only: **False**
+Read only: **True**
 
 A <b>ticket</b> type query is executed on Zendesk.
 
@@ -320,30 +305,25 @@ action_result.data.\*.requester_id_name | string | | MOSHAH |
 action_result.data.\*.allow_attachments | boolean | | True False |
 action_result.data.\*.allow_channelback | boolean | | True False |
 action_result.data.\*.assignee_id | numeric | | 5980690157 |
-action_result.data.\*.brand_id | numeric | | 1103787 |
 action_result.data.\*.custom_fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.custom_fields.\*.value | string | | test field value |
 action_result.data.\*.due_at | string | | |
 action_result.data.\*.external_id | string | | |
 action_result.data.\*.fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.fields.\*.value | string | | test field value |
-action_result.data.\*.forum_topic_id | string | | |
+action_result.data.\*.forum_topic_id | numeric | | |
 action_result.data.\*.from_messaging_channel | boolean | | True False |
 action_result.data.\*.group_id | numeric | | 28493297 |
 action_result.data.\*.has_incidents | boolean | | True False |
 action_result.data.\*.is_public | boolean | | True False |
 action_result.data.\*.organization_id | numeric | | |
 action_result.data.\*.priority | string | | |
-action_result.data.\*.problem_id | string | | |
+action_result.data.\*.problem_id | numeric | | |
 action_result.data.\*.raw_subject | string | | moshah ticket |
-action_result.data.\*.recipient | string | | |
 action_result.data.\*.requester_id | numeric | | 369385135314 |
 action_result.data.\*.result_type | string | | ticket |
-action_result.data.\*.satisfaction_probability | string | | |
-action_result.data.\*.satisfaction_rating | string | | |
+action_result.data.\*.satisfaction_probability | numeric | | |
 action_result.data.\*.submitter_id | numeric | | 5980690157 |
 action_result.data.\*.submitter_id_name | string | | Herman Edwards |
-action_result.data.\*.tags | string | | |
+action_result.data.\*.tags.\* | string | | |
 action_result.data.\*.ticket_form_id | numeric | | 181987 |
 action_result.data.\*.type | string | | |
 action_result.data.\*.updated_at | string | | 2018-11-20T12:08:58Z |
@@ -393,13 +373,10 @@ action_result.data.\*.requester_id_name | string | | Herman Edwards |
 action_result.data.\*.allow_attachments | boolean | | True False |
 action_result.data.\*.allow_channelback | boolean | | True False |
 action_result.data.\*.assignee_id | numeric | | 5980690157 |
-action_result.data.\*.brand_id | numeric | | 1103787 |
 action_result.data.\*.custom_fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.custom_fields.\*.value | string | | custom field value |
 action_result.data.\*.due_at | string | | |
 action_result.data.\*.external_id | string | | |
 action_result.data.\*.fields.\*.id | numeric | | 360011869194 |
-action_result.data.\*.fields.\*.value | string | | test field value |
 action_result.data.\*.forum_topic_id | numeric | | |
 action_result.data.\*.from_messaging_channel | boolean | | True False |
 action_result.data.\*.group_id | numeric | | 28493297 |
@@ -409,10 +386,8 @@ action_result.data.\*.organization_id | numeric | | 3853131587 |
 action_result.data.\*.priority | string | | |
 action_result.data.\*.problem_id | numeric | | |
 action_result.data.\*.raw_subject | string | | Zeus |
-action_result.data.\*.recipient | string | | |
 action_result.data.\*.requester_id | numeric | | 5980690157 |
-action_result.data.\*.satisfaction_probability | string | | |
-action_result.data.\*.satisfaction_rating | string | | |
+action_result.data.\*.satisfaction_probability | numeric | | |
 action_result.data.\*.submitter_id | numeric | | 5980690157 |
 action_result.data.\*.submitter_id_name | string | | Herman Edwards |
 action_result.data.\*.tags.\* | string | | |

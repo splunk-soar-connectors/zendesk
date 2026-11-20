@@ -75,9 +75,10 @@ def ticket_output(output_cls, ticket, result_status="success"):
     return output_cls(**output)
 
 
-def enrich_ticket_user_names(asset, tickets):
+def enrich_ticket_user_names(asset, tickets, name_cache=None):
     """Add submitter, assignee, and requester names as the legacy connector did."""
-    name_cache = {}
+    if name_cache is None:
+        name_cache = {}
     for ticket in tickets:
         for id_field in ("submitter_id", "assignee_id", "requester_id"):
             user_id = ticket.get(id_field)
