@@ -16,7 +16,12 @@
 import json
 
 from soar_sdk.abstract import SOARClient
-from soar_sdk.action_results import ActionOutput, OutputField, PermissiveActionOutput
+from soar_sdk.action_results import (
+    ActionOutput,
+    ActionResult,
+    OutputField,
+    PermissiveActionOutput,
+)
 from soar_sdk.exceptions import ActionFailure
 from soar_sdk.params import Param, Params
 
@@ -118,12 +123,11 @@ class CreateTicketSummary(ActionOutput):
     action_type="generic",
     read_only=False,
     render_as="table",
+    output_class=CreateTicketOutput,
     summary_type=CreateTicketSummary,
     verbose='If you want to assign the value to custom fields, use the following format in \'fields\' parameter<br>{\\"custom_fields\\": [{\\"Test Field\\": \\"test field value\\"}, {\\"custom test field\\": \\"custom test field value\\"}]}<br>If you want to add <b>double quote(\\")</b> or <b>backslash(\\)</b> in custom fields, use the <b>escape(\\)</b> character followed by double quote or backslash, check the following examples,<br><ul><li>To add double quote or backslash in custom field values: {\\"custom_fields\\": [{\\"Test Field\\": \\"test \\\\"field\\\\" value\\"}, {\\"custom test field\\": \\"custom \\\\test\\\\ field value\\"}]}</li><li>To add double quote or backslash in custom field keys: {\\"custom_fields\\": [{\\"Test \\\\"Name\\\\" Field\\": \\"test field value\\"}, {\\"custom \\\\test\\\\ field\\": \\"custom test field value\\"}]}</li></ul>',
 )
-def create_ticket(
-    params: CreateTicketParams, soar: SOARClient, asset: Asset
-) -> CreateTicketOutput:
+def create_ticket(params: CreateTicketParams, soar: SOARClient, asset: Asset):
     ticket = {"subject": params.subject, "comment": {"body": params.description}}
     if params.fields:
         try:
@@ -141,11 +145,18 @@ def create_ticket(
     payload = zendesk_request(asset, "POST", "/tickets.json", data={"ticket": ticket})
     created_ticket = payload["ticket"]
     ticket_id = int(created_ticket["id"])
-    soar.set_summary(CreateTicketSummary(created_ticket_id=ticket_id))
+    summary = CreateTicketSummary(created_ticket_id=ticket_id)
+    soar.set_summary(summary)
     try:
         enrich_ticket_user_names(asset, [created_ticket])
-    except Exception as error:
-        raise ActionFailure(
-            f"Zendesk created ticket {ticket_id}, but user-name enrichment failed."
-        ) from error
+    except Exception:
+        # Return the ticket and summary because Zendesk already created it.
+        result = ActionResult(
+            status=False,
+            message=f"Zendesk created ticket {ticket_id}, but user-name enrichment failed.",
+            param=params.model_dump(),
+        )
+        result.add_data(created_ticket)
+        result.set_summary(summary.model_dump())
+        return result
     return ticket_output(CreateTicketOutput, created_ticket)
