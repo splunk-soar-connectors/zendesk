@@ -140,6 +140,12 @@ def create_ticket(
             ticket.update(fields)
     payload = zendesk_request(asset, "POST", "/tickets.json", data={"ticket": ticket})
     created_ticket = payload["ticket"]
-    soar.set_summary(CreateTicketSummary(created_ticket_id=int(created_ticket["id"])))
-    enrich_ticket_user_names(asset, [created_ticket])
+    ticket_id = int(created_ticket["id"])
+    soar.set_summary(CreateTicketSummary(created_ticket_id=ticket_id))
+    try:
+        enrich_ticket_user_names(asset, [created_ticket])
+    except Exception as error:
+        raise ActionFailure(
+            f"Zendesk created ticket {ticket_id}, but user-name enrichment failed."
+        ) from error
     return ticket_output(CreateTicketOutput, created_ticket)
