@@ -16,7 +16,7 @@
 import json
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-import httpx
+import httpx2
 from soar_sdk.auth import BasicAuth
 from soar_sdk.exceptions import ActionFailure
 
@@ -43,7 +43,7 @@ def request(asset, method: str, endpoint: str, *, params=None, data=None):
         url = urlunsplit(parsed_endpoint._replace(query=combined_query))
 
     try:
-        response = httpx.request(
+        response = httpx2.request(
             method,
             url,
             auth=BasicAuth(username, secret),
@@ -52,7 +52,7 @@ def request(asset, method: str, endpoint: str, *, params=None, data=None):
             timeout=30,
             follow_redirects=True,
         )
-    except httpx.HTTPError as exc:
+    except httpx2.HTTPError as exc:
         raise ActionFailure(f"Unable to connect to Zendesk: {exc}") from exc
     if response.status_code == 204:
         return None
@@ -88,7 +88,7 @@ def enrich_ticket_user_names(asset, tickets, name_cache=None):
             if user_id not in name_cache:
                 try:
                     user_payload = request(asset, "GET", f"/users/{user_id}.json")
-                except (ActionFailure, httpx.HTTPError, ValueError):
+                except (ActionFailure, httpx2.HTTPError, ValueError):
                     name_cache[user_id] = None
                 else:
                     user_cache = user_payload.get("user") or {}
