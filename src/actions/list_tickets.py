@@ -20,10 +20,11 @@ from soar_sdk.action_results import (
     OutputField,
     PermissiveActionOutput,
 )
+from soar_sdk.exceptions import ActionFailure
 from soar_sdk.params import Param, Params
 
-from ..app import Asset, app
-from ..helper import enrich_ticket_user_names, request as zendesk_request, ticket_output
+from ..asset import Asset
+from ..helper import enrich_ticket_user_names, request as zendesk_request
 
 
 class ListTicketsParams(Params):
@@ -118,13 +119,6 @@ class ListTicketsSummary(ActionOutput):
     total_tickets: int
 
 
-@app.action(
-    description="Get a list of Tickets",
-    action_type="generic",
-    read_only=True,
-    render_as="table",
-    summary_type=ListTicketsSummary,
-)
 def list_tickets(
     params: ListTicketsParams, soar: SOARClient, asset: Asset
 ) -> list[ListTicketsOutput]:
@@ -148,9 +142,9 @@ def list_tickets(
     for ticket in tickets:
         try:
             enrich_ticket_user_names(asset, [ticket], name_cache)
-            outputs.append(ticket_output(ListTicketsOutput, ticket))
+            outputs.append(ListTicketsOutput(**ticket))
             partial_data.append(dict(ticket))
-        except Exception as error:
+        except ActionFailure as error:
             if not partial_data:
                 raise
             # Preserve successful rows on a later failure, matching legacy behavior.

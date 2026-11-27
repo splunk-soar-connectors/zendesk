@@ -14,53 +14,68 @@
 """Send a custom request to the Zendesk Support API."""
 
 import json
+from collections.abc import Sequence
+from urllib.parse import parse_qsl
 
-from soar_sdk.abstract import SOARClient
 from soar_sdk.action_results import ActionOutput, OutputField
 from soar_sdk.exceptions import ActionFailure
-from soar_sdk.params import Param, Params
+from soar_sdk.params import MakeRequestParams
 
-from ..app import Asset, app
+from ..asset import Asset
 from ..helper import request as zendesk_request
-
-
-class MakeRequestParams(Params):
-    method: str = Param(description="HTTP method: GET, POST, PUT, PATCH, or DELETE")
-    endpoint: str = Param(description="Zendesk API endpoint, such as /tickets.json")
-    query_params: str | None = Param(
-        description="Optional query parameters as a JSON object"
-    )
-    body: str | None = Param(description="Optional request body as JSON")
 
 
 class MakeRequestOutput(ActionOutput):
     response: str = OutputField(column_name="Response")
 
 
-@app.action(
-    description="Send a custom request to the Zendesk Support API",
-    action_type="generic",
-    read_only=False,
-)
-def make_request(
-    params: MakeRequestParams, soar: SOARClient, asset: Asset
-) -> MakeRequestOutput:
-    """Send one request to the configured Zendesk API and return its response."""
-    method = params.method.upper()
-    if method not in {"GET", "POST", "PUT", "PATCH", "DELETE"}:
-        raise ActionFailure("method must be GET, POST, PUT, PATCH, or DELETE")
+def _parse_query_parameters(value: str | None) -> Sequence[tuple[str, object]]:
+    if not value:
+        return []
+    if not value.lstrip().startswith(("{", "[")):
+        return parse_qsl(value.lstrip("?"), keep_blank_values=True)
+
+    error_message = "query_parameters must be a JSON object or a query string"
+    try:
+        query = json.loads(value)
+    except json.JSONDecodeError as exc:
+        raise ActionFailure(error_message) from exc
+    if not isinstance(query, dict):
+        raise ActionFailure(error_message)
+    return list(query.items())
+
+
+def make_request(params: MakeRequestParams, asset: Asset) -> MakeRequestOutput:
+    """Send a custom request to the Zendesk Support API"""
+    method = params.http_method.upper()
+    if method not in {"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}:
+        raise ActionFailure(
+            "http_method must be GET, POST, PUT, PATCH, DELETE, HEAD, or OPTIONS"
+        )
     if (
         not params.endpoint.startswith("/")
         or params.endpoint.startswith("//")
         or ".." in params.endpoint.split("/")
     ):
         raise ActionFailure("endpoint must be a path under the Zendesk API")
+    query = _parse_query_parameters(params.query_parameters)
     try:
-        query = json.loads(params.query_params) if params.query_params else None
+        headers = json.loads(params.headers) if params.headers else {}
         body = json.loads(params.body) if params.body else None
-    except ValueError as exc:
-        raise ActionFailure("query_params and body must contain valid JSON") from exc
-    if query is not None and not isinstance(query, dict):
-        raise ActionFailure("query_params must be a JSON object")
-    payload = zendesk_request(asset, method, params.endpoint, params=query, data=body)
+    except json.JSONDecodeError as exc:
+        raise ActionFailure("headers and body must contain valid JSON") from exc
+    if not isinstance(headers, dict) or not all(
+        isinstance(value, str) for value in headers.values()
+    ):
+        raise ActionFailure("headers must be a JSON object with string values")
+    payload = zendesk_request(
+        asset,
+        method,
+        params.endpoint,
+        params=query,
+        data=body,
+        headers=headers,
+        timeout=params.timeout if params.timeout is not None else 30,
+        verify_ssl=params.verify_ssl,
+    )
     return MakeRequestOutput(response=json.dumps(payload))

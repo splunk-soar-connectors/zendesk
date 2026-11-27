@@ -13,29 +13,13 @@
 # limitations under the License.
 from soar_sdk.abstract import SOARClient
 from soar_sdk.app import App
-from soar_sdk.asset import BaseAsset, AssetField, FieldCategory
 from soar_sdk.logging import getLogger
 
+from .actions import register_actions
+from .asset import Asset
 from .helper import request as zendesk_request
 
 logger = getLogger()
-
-
-class Asset(BaseAsset):
-    url: str = AssetField(
-        required=True,
-        category=FieldCategory.CONNECTIVITY,
-        description="Device URL including the port, e.g. https://myzendesk.enterprise.com",
-    )
-    api_token: str | None = AssetField(
-        category=FieldCategory.CONNECTIVITY, sensitive=True, description="API Token"
-    )
-    username: str = AssetField(
-        required=True, category=FieldCategory.CONNECTIVITY, description="Username"
-    )
-    password: str | None = AssetField(
-        category=FieldCategory.CONNECTIVITY, sensitive=True, description="Password"
-    )
 
 
 app = App(
@@ -60,14 +44,7 @@ def test_connectivity(soar: SOARClient, asset: Asset) -> None:
     soar.set_message("Connectivity test passed")
 
 
-from .actions import (
-    create_ticket,  # noqa: F401
-    get_ticket,  # noqa: F401
-    list_tickets,  # noqa: F401
-    make_request,  # noqa: F401
-    run_query,  # noqa: F401
-    update_ticket,  # noqa: F401
-)
+register_actions(app)
 
 
 if __name__ == "__main__":

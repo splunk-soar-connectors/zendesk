@@ -25,12 +25,11 @@ from soar_sdk.action_results import (
 from soar_sdk.exceptions import ActionFailure
 from soar_sdk.params import Param, Params
 
-from ..app import Asset, app
+from ..asset import Asset
 from ..helper import (
     enrich_ticket_user_names,
     request as zendesk_request,
     resolve_custom_fields,
-    ticket_output,
 )
 
 
@@ -118,15 +117,6 @@ class CreateTicketSummary(ActionOutput):
     created_ticket_id: int
 
 
-@app.action(
-    description="Create a Ticket",
-    action_type="generic",
-    read_only=False,
-    render_as="table",
-    output_class=CreateTicketOutput,
-    summary_type=CreateTicketSummary,
-    verbose='If you want to assign the value to custom fields, use the following format in \'fields\' parameter<br>{\\"custom_fields\\": [{\\"Test Field\\": \\"test field value\\"}, {\\"custom test field\\": \\"custom test field value\\"}]}<br>If you want to add <b>double quote(\\")</b> or <b>backslash(\\)</b> in custom fields, use the <b>escape(\\)</b> character followed by double quote or backslash, check the following examples,<br><ul><li>To add double quote or backslash in custom field values: {\\"custom_fields\\": [{\\"Test Field\\": \\"test \\\\"field\\\\" value\\"}, {\\"custom test field\\": \\"custom \\\\test\\\\ field value\\"}]}</li><li>To add double quote or backslash in custom field keys: {\\"custom_fields\\": [{\\"Test \\\\"Name\\\\" Field\\": \\"test field value\\"}, {\\"custom \\\\test\\\\ field\\": \\"custom test field value\\"}]}</li></ul>',
-)
 def create_ticket(params: CreateTicketParams, soar: SOARClient, asset: Asset):
     ticket = {"subject": params.subject, "comment": {"body": params.description}}
     if params.fields:
@@ -149,7 +139,7 @@ def create_ticket(params: CreateTicketParams, soar: SOARClient, asset: Asset):
     soar.set_summary(summary)
     try:
         enrich_ticket_user_names(asset, [created_ticket])
-    except Exception:
+    except ActionFailure:
         # Return the ticket and summary because Zendesk already created it.
         result = ActionResult(
             status=False,
@@ -159,4 +149,4 @@ def create_ticket(params: CreateTicketParams, soar: SOARClient, asset: Asset):
         result.add_data(created_ticket)
         result.set_summary(summary.model_dump())
         return result
-    return ticket_output(CreateTicketOutput, created_ticket)
+    return CreateTicketOutput(**created_ticket)

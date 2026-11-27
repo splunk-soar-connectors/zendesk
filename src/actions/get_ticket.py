@@ -18,8 +18,8 @@ from soar_sdk.action_results import ActionOutput, OutputField, PermissiveActionO
 from soar_sdk.exceptions import ActionFailure
 from soar_sdk.params import Param, Params
 
-from ..app import Asset, app
-from ..helper import enrich_ticket_user_names, request as zendesk_request, ticket_output
+from ..asset import Asset
+from ..helper import enrich_ticket_user_names, request as zendesk_request
 
 
 class GetTicketParams(Params):
@@ -113,13 +113,6 @@ class GetTicketSummary(ActionOutput):
     total_tickets: int
 
 
-@app.action(
-    description="Get ticket information",
-    action_type="generic",
-    read_only=True,
-    render_as="table",
-    summary_type=GetTicketSummary,
-)
 def get_ticket(
     params: GetTicketParams, soar: SOARClient, asset: Asset
 ) -> GetTicketOutput:
@@ -133,4 +126,4 @@ def get_ticket(
     soar.set_summary(
         GetTicketSummary(queried_ticket_id=int(ticket["id"]), total_tickets=1)
     )
-    return ticket_output(GetTicketOutput, ticket)
+    return GetTicketOutput(**ticket)

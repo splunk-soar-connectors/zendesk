@@ -20,12 +20,11 @@ from soar_sdk.action_results import ActionOutput, OutputField, PermissiveActionO
 from soar_sdk.params import Param, Params
 from soar_sdk.exceptions import ActionFailure
 
-from ..app import Asset, app
+from ..asset import Asset
 from ..helper import (
     enrich_ticket_user_names,
     request as zendesk_request,
     resolve_custom_fields,
-    ticket_output,
 )
 
 
@@ -119,14 +118,6 @@ class UpdateTicketSummary(ActionOutput):
     total_tickets: int
 
 
-@app.action(
-    description="Update ticket information",
-    action_type="generic",
-    read_only=False,
-    render_as="table",
-    summary_type=UpdateTicketSummary,
-    verbose='Update an already existing ticket with the values that are specified in the \'fields\' parameter. The user has to know the key names to set in this parameter. Please refer to the Zendesk Core API, Tickets section to learn about the fields that can be used to update or create tickets.<br>The JSON that is specified in the \'fields\' parameter should have the keys and values specified in double quotes string format, except in case of boolean values, which should be either <i>true</i> or <i>false</i>.<br>Some examples: <ul><li>To close a ticket: {\\"subject\\": \\"Zeus, multiple action need to be taken\\", \\"status\\": \\"solved\\"}</li><li>To add a comment: {\\"status\\": \\"open\\", \\"comment\\": { \\"body\\": \\"The smoke is very colorful.\\", \\"author_id\\": 1 }}</li><li>To update custom fields value: {\\"custom_fields\\": [{\\"Test Field\\": \\"test field value\\"}, {\\"custom test field\\": \\"custom test field value\\"}]}</li></ul>If you want to add <b>double quote(\\")</b> or <b>backslash(\\)</b> in custom fields, use the <b>escape(\\)</b> character followed by double quote or backslash, check the following examples,<br><ul><li>To add double quote or backslash in custom field values: {\\"custom_fields\\": [{\\"Test Field\\": \\"test \\\\"field\\\\" value\\"}, {\\"custom test field\\": \\"custom \\\\test\\\\ field value\\"}]}</li><li>To add double quote or backslash in custom field keys: {\\"custom_fields\\": [{\\"Test \\\\"Name\\\\" Field\\": \\"test field value\\"}, {\\"custom \\\\test\\\\ field\\": \\"custom test field value\\"}]}</li></ul>',
-)
 def update_ticket(
     params: UpdateTicketParams, soar: SOARClient, asset: Asset
 ) -> UpdateTicketOutput:
@@ -152,4 +143,4 @@ def update_ticket(
         UpdateTicketSummary(updated_ticket_id=int(ticket["id"]), total_tickets=1)
     )
     soar.set_message(f"Updated ticket id: {ticket['id']}")
-    return ticket_output(UpdateTicketOutput, ticket)
+    return UpdateTicketOutput(**ticket)
